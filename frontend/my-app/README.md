@@ -68,18 +68,18 @@ Após autenticar-se com sucesso, o usuário será redirecionado para a página p
 ---
 ### Funcionalidades do projecto
 
-Autenticação
-Perfil do usuário
-Agendamento de jogos
-Participantes
-Confirmação de presença
-Histórico de jogos
-Estatísticas
-Notificações
-Administração
-Configurações
-Chat entre jogadores
-Ranking dos jogadores
+Autenticação,
+Perfil do usuário,
+Agendamento de jogos,
+Participantes,
+Confirmação de presença,
+Histórico de jogos,
+Estatísticas,
+Notificações,
+Administração,
+Configurações,
+Chat entre jogadores,
+Ranking dos jogadores,
 
 ### 🔐 Auth (features/auth)
 Responsável por toda a autenticação do sistema.
