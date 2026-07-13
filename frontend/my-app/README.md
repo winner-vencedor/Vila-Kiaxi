@@ -79,129 +79,129 @@ Notificações,
 Administração,
 Configurações,
 Chat entre jogadores,
-Ranking dos jogadores,
+Ranking dos jogadores.
 
 ### 🔐 Auth (features/auth)
 Responsável por toda a autenticação do sistema.
-Funcionalidades
+Funcionalidades:
 
-Login
-Cadastro
-Recuperação de senha
-Alteração de senha
-Logout
-Validação da sessão
-Proteção de rotas
+Login,
+Cadastro,
+Recuperação de senha,
+Alteração de senha,
+Logout,
+Validação da sessão,
+Proteção de rotas.
 
 ### 👤 Profile (features/profile)
 Gerencia os dados do usuário.
-Funcionalidades
+Funcionalidades:
 
-Visualizar perfil
-Editar nome
-Alterar telefone
-Alterar foto
-Alterar senha
-Informações da conta
+Visualizar perfil,
+Editar nome,
+Alterar telefone,
+Alterar foto,
+Alterar senha,
+Informações da conta.
 
 ### ⚽ Games (features/games)
 É o coração do sistema.
-Funcionalidades
+Funcionalidades:
 
-Criar jogo
-Editar jogo
-Cancelar jogo
-Definir local
-Definir data
-Definir horário
-Definir número máximo de participantes
-Visualizar detalhes do jogo
+Criar jogo,
+Editar jogo,
+Cancelar jogo,
+Definir local,
+Definir data,
+Definir horário,
+Definir número máximo de participantes,
+Visualizar detalhes do jogo.
 
 ### 👥 Participants (features/participants)
 Gerencia quem participa dos jogos.
-Funcionalidades
+Funcionalidades:
 
-Lista de participantes
-Adicionar participante
-Remover participante
-Visualizar participantes inscritos
+Lista de participantes,
+Adicionar participante,
+Remover participante,
+Visualizar participantes inscritos.
 
 ### ✅ Attendance (features/attendance)
 Confirmação de presença.
-Funcionalidades
+Funcionalidades:
 
-Confirmar presença
-Cancelar presença
-Lista de confirmados
-Lista de ausentes
+Confirmar presença,
+Cancelar presença,
+Lista de confirmados,
+Lista de ausentes.
 
 ### 📅 History (features/history)
 Armazena jogos já realizados.
-Funcionalidades
+Funcionalidades:
 
-Histórico dos jogos
-Participantes de cada jogo
-Datas
-Resultados (caso exista)
+Histórico dos jogos,
+Participantes de cada jogo,
+Datas,
+Resultados (caso exista).
 
 ### 📊 Statistics (features/statistics)
 Exibe informações estatísticas.
-Funcionalidades
+Funcionalidades:
 
-Jogos realizados
-Participações do usuário
-Número de presenças
-Frequência
-Jogadores mais ativos
+Jogos realizados,
+Participações do usuário,
+Número de presenças,
+Frequência,
+Jogadores mais ativos.
 
 ### 🔔 Notifications (features/notifications)
 Responsável pelos avisos.
 Funcionalidades:
 
-Novos jogos
-Alterações de horários
-Cancelamentos
-Confirmações
-Mensagens do administrador
+Novos jogos,
+Alterações de horários,
+Cancelamentos,
+Confirmações,
+Mensagens do administrador.
 
 ### 🛡️ Admin (features/admin)
 Área exclusiva dos administradores.
 Funcionalidades:
 
-Gerenciar usuários
-Criar jogos
-Editar jogos
-Excluir jogos
-Enviar avisos
-Controlar participantes
-Definir administradores
+Gerenciar usuários,
+Criar jogos,
+Editar jogos,
+Excluir jogos,
+Enviar avisos,
+Controlar participantes,
+Definir administradores.
 
 ### ⚙️ Settings (features/settings)
 Preferências do usuário.
 Funcionalidades:
 
-Alterar tema
-Idioma
-Preferências de notificações
-Configurações da conta
+Alterar tema,
+Idioma,
+Preferências de notificações,
+Configurações da conta.
 
 ### 💬 Chat (features/chat)
 Comunicação entre os participantes.
 Funcionalidades:
 
-Conversa geral
-Mensagens em tempo real
-Compartilhamento de informações do jogo
+Conversa geral,
+Mensagens em tempo real,
+Compartilhamento de informações do jogo.
 
 ### 🏆 Ranking (features/ranking)
 
 Classificação dos jogadores.
 Funcionalidades:
 
-Ranking de participação
-Ranking de presenças
-Jogadores mais ativos
-Estatísticas individuais
+Ranking de participação,
+Ranking de presenças,
+Jogadores mais ativos,
+Estatísticas individuais.
 
 -----
 
