@@ -156,7 +156,7 @@ O projeto utiliza tecnologias modernas do ecossistema JavaScript e React.
 ---
 
 # 📁 Estrutura do Projeto
-
+````
 src
 │
 ├── app
