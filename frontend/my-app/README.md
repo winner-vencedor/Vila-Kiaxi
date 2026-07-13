@@ -81,53 +81,127 @@ Configurações
 Chat entre jogadores
 Ranking dos jogadores
 
-### Autenticação
+### 🔐 Auth (features/auth)
+Responsável por toda a autenticação do sistema.
+Funcionalidades
 
-Permite que os usuários acessem o sistema de forma segura através de login e cadastro. Também é responsável pelo gerenciamento da sessão do usuário e pelo controle de acesso às áreas protegidas da aplicação.
+Login
+Cadastro
+Recuperação de senha
+Alteração de senha
+Logout
+Validação da sessão
+Proteção de rotas
 
-###  Perfil do Usuário
+### 👤 Profile (features/profile)
+Gerencia os dados do usuário.
+Funcionalidades
 
-Permite que cada usuário visualize e atualize suas informações pessoais, como nome, telefone, foto de perfil e demais dados da conta.
+Visualizar perfil
+Editar nome
+Alterar telefone
+Alterar foto
+Alterar senha
+Informações da conta
 
-### Agendamento de Jogos
+### ⚽ Games (features/games)
+É o coração do sistema.
+Funcionalidades
 
-Módulo responsável pelo gerenciamento dos jogos da congregação, permitindo a criação, edição, visualização e cancelamento de partidas, além da definição de data, horário e local.
+Criar jogo
+Editar jogo
+Cancelar jogo
+Definir local
+Definir data
+Definir horário
+Definir número máximo de participantes
+Visualizar detalhes do jogo
 
-### Participantes
+### 👥 Participants (features/participants)
+Gerencia quem participa dos jogos.
+Funcionalidades
 
-Gerencia os jogadores inscritos em cada partida, permitindo visualizar a lista de participantes e controlar quem fará parte de cada jogo.
+Lista de participantes
+Adicionar participante
+Remover participante
+Visualizar participantes inscritos
 
-###  Confirmação de Presença
+### ✅ Attendance (features/attendance)
+Confirmação de presença.
+Funcionalidades
 
-Permite que cada participante confirme ou cancele sua presença em um jogo, facilitando a organização das equipes e o planejamento da partida.
+Confirmar presença
+Cancelar presença
+Lista de confirmados
+Lista de ausentes
 
-###  Histórico de Jogos
+### 📅 History (features/history)
+Armazena jogos já realizados.
+Funcionalidades
 
-Disponibiliza um registro dos jogos já realizados, permitindo consultar informações como data, participantes e demais detalhes de cada partida.
+Histórico dos jogos
+Participantes de cada jogo
+Datas
+Resultados (caso exista)
 
-###  Estatísticas
+### 📊 Statistics (features/statistics)
+Exibe informações estatísticas.
+Funcionalidades
 
-Apresenta indicadores relacionados à participação dos jogadores, frequência nos jogos e outras métricas relevantes para acompanhar a atividade da congregação.
+Jogos realizados
+Participações do usuário
+Número de presenças
+Frequência
+Jogadores mais ativos
 
-###  Notificações
+### 🔔 Notifications (features/notifications)
+Responsável pelos avisos.
+Funcionalidades:
 
-Responsável por informar os usuários sobre novos jogos, alterações de horários, cancelamentos, confirmações de presença e demais comunicados importantes.
+Novos jogos
+Alterações de horários
+Cancelamentos
+Confirmações
+Mensagens do administrador
 
-### Administração
+### 🛡️ Admin (features/admin)
+Área exclusiva dos administradores.
+Funcionalidades:
 
-Área destinada aos administradores do sistema, permitindo o gerenciamento de usuários, jogos, participantes e outras funcionalidades administrativas.
+Gerenciar usuários
+Criar jogos
+Editar jogos
+Excluir jogos
+Enviar avisos
+Controlar participantes
+Definir administradores
 
-### Configurações
+### ⚙️ Settings (features/settings)
+Preferências do usuário.
+Funcionalidades:
 
-Permite que o usuário personalize preferências da aplicação, como configurações da conta, notificações,temas e outras opções disponíveis.
+Alterar tema
+Idioma
+Preferências de notificações
+Configurações da conta
 
-### Chat entre Jogadores
+### 💬 Chat (features/chat)
+Comunicação entre os participantes.
+Funcionalidades:
 
-Espaço destinado à comunicação entre os participantes, possibilitando a troca de mensagens relacionadas aos jogos, organização das partidas e outros assuntos pertinentes.
+Conversa geral
+Mensagens em tempo real
+Compartilhamento de informações do jogo
 
-### Ranking dos Jogadores
+### 🏆 Ranking (features/ranking)
 
-Exibe uma classificação baseada na participação dos usuários, frequência nos jogos e outros critérios definidos pelo sistema, incentivando o engajamento da comunidade.
+Classificação dos jogadores.
+Funcionalidades:
+
+Ranking de participação
+Ranking de presenças
+Jogadores mais ativos
+Estatísticas individuais
 
 -----
 
