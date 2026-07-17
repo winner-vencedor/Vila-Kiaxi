@@ -435,7 +435,7 @@ Marcar com x as tarefas já realizadas Marionel
 
 - [x] Configuração do projeto
 - [x] Estrutura inicial
-- [ ] Sistema de Login
+- [x] Sistema de Login
 - [ ] Sistema de Cadastro
 - [ ] Dashboard
 - [ ] Perfil do usuário
