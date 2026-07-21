@@ -3,8 +3,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { BottomSheet } from '@/features/auth/components/customized/Bottom-Sheet/index';
 import FootbalIlustration from '@/assets/Soccer-bro.svg';
-import FormLogin from '@/features/auth/components/FormLogin';
+import FormLogin from '@/features/auth/components/Form';
 import { User2Icon, UserPlusIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [open, setopen] = useState(false);
@@ -25,19 +26,16 @@ export default function LoginForm() {
 
           <div className="flex flex-col  gap-4 ">
             <button
-              className="text-zinc-50 flex items-center gap-2 md:hidden bg-emerald-500 rounded-2xl px-4 py-2 w-full text-xl font-semibold hover:bg-emerald-800"
+              className="text-zinc-50 flex justify-center items-center gap-2 md:hidden bg-emerald-500 rounded-2xl px-4 py-2 w-full text-xl font-semibold hover:bg-emerald-800"
               onClick={() => setopen(true)}
             >
               <User2Icon className="h-6" />
               Login
             </button>
 
-            <button
-              className="text-zinc-100 flex items-center gap-2 md:hidden bg-emerald-500 rounded-2xl px-4 py-2 w-full text-xl font-semibold hover:bg-emerald-800"
-              onClick={() => setopen(true)}
-            >
+            <button className="text-zinc-100 flex justify-center items-center gap-2 md:hidden bg-emerald-500 rounded-2xl px-4 py-2 w-full text-xl font-semibold hover:bg-emerald-800">
               <UserPlusIcon className="h-6" />
-              Cadastrar
+              <Link href="/cadastrar">Cadastrar</Link>
             </button>
           </div>
 

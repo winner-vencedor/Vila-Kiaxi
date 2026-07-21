@@ -52,7 +52,7 @@ export default function FormLogin(){
 
         <div className="mt-8 text-sm">
           <span>Não tens uma conta?</span>
-          <Link href="Cadastrar" className="text-emerald-600 font-normal">
+          <Link href="cadastrar" className="text-emerald-600 font-normal">
             Criar conta
           </Link>
         </div>

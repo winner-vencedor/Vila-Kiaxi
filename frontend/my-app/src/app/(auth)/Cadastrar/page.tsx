@@ -1,7 +1,8 @@
-export default function Cadastrar(){
+import Register from "@/features/auth/components/RegisterForm"
+export default function cadastrar(){
     return(
         <div>
-            <p>ola cadastro</p>
+            <Register/>
         </div>
     )
 }
