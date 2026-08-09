@@ -1,12 +1,5 @@
 # FutVila-Kiaxi - Frontend
 
-O **FutVila-Kiaxi** é uma aplicação web desenvolvida com **Next.js** para facilitar a organização e o agendamento de jogos de futebol da congregação.
-
-O sistema foi projetado para oferecer uma experiência simples, rápida e intuitiva aos usuários, permitindo que os membros da congregação acompanhem e participem dos jogos de forma organizada.
-
-Diferentemente de sites institucionais, o projeto **não possui uma Landing Page**. O fluxo da aplicação inicia diretamente na tela de autenticação.
-
----
 
 # Sobre o Projeto
 
@@ -15,16 +8,6 @@ O frontend é responsável por toda a interface gráfica da aplicação, oferece
 A aplicação comunica-se com o backend através de uma API REST para realizar autenticação, cadastro de usuários, gerenciamento de dados e demais funcionalidades do sistema.
 
 Todo o projeto está sendo desenvolvido utilizando as boas práticas do ecossistema React e Next.js, priorizando organização, reutilização de componentes e escalabilidade.
-
----
-
-# Objetivos
-
-- Facilitar a organização dos jogos da congregação.
-- Centralizar o gerenciamento dos participantes.
-- Oferecer uma interface moderna e intuitiva.
-- Garantir uma experiência responsiva para dispositivos móveis e desktops.
-- Manter uma arquitetura escalável e de fácil manutenção.
 
 ---
 
@@ -68,18 +51,18 @@ Após autenticar-se com sucesso, o usuário será redirecionado para a página p
 ---
 ### Funcionalidades do projecto
 
-Autenticação,
-Perfil do usuário,
-Agendamento de jogos,
-Participantes,
-Confirmação de presença,
-Histórico de jogos,
-Estatísticas,
-Notificações,
-Administração,
-Configurações,
-Chat entre jogadores,
-Ranking dos jogadores.
+- Autenticação,
+- Perfil do usuário,
+- Agendamento de jogos,
+- Participantes,
+- Confirmação de presença,
+- Histórico de jogos,
+- Estatísticas,
+- Notificações,
+- Administração,
+- Configurações,
+- Chat entre jogadores,
+- Ranking dos jogadores.
 
 ### 🔐 Auth (features/auth)
 Responsável por toda a autenticação do sistema.
@@ -289,8 +272,9 @@ src/
 ├── styles/
 ├── types/
 └── utils/
----
 
+````
+---
 
 # 📱 Responsividade
 
@@ -348,7 +332,7 @@ cd frontend
 Instale as dependências:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ---
@@ -374,25 +358,25 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 Modo de desenvolvimento
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Build da aplicação
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Executar em produção
 
 ```bash
-npm run start
+pnpm start
 ```
 
 Executar o ESLint
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ---
@@ -448,8 +432,32 @@ Marcar com x as tarefas já realizadas Marionel
 
 ---
 
-# 📄 Licença
+#   Licença
 
 Este projeto faz parte do sistema **FutVila-Kiaxi** e destina-se ao gerenciamento e organização dos jogos da congregação.
 
 O código está em desenvolvimento e poderá receber novas funcionalidades conforme a evolução do projeto.
+
+
+
+# Frontend
+
+## Objetivo
+
+## Tecnologias
+
+## Estrutura de Pastas
+
+## Fluxo de Navegação
+
+## Gerenciamento de Estado
+
+## Componentes
+
+## Formulários
+
+## Validação
+
+## Como executar
+
+## Scripts

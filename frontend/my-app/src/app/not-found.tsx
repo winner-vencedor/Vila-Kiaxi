@@ -15,9 +15,9 @@ export default function GlobalNotFound() {
     <div className="min-h-screen  flex flex-col justify-center items-center bg-gray-100">
       <Image src={NotFoundImage} alt="Not found" priority />
       <div>
-        <Link href="/login" className='flex gap-3 hover:text-emerald-900 transition-all font-bold'>
-          <p className="text-emerald-700">Voltar a página principal</p>
-          <ArrowRight className='text-emerald-700'/>
+        <Link href="/login" className='flex gap-3 hover:text-gray-900 transition-all font-bold'>
+          <p className="text-gray-700">Voltar a página principal</p>
+          <ArrowRight className='text-gray-700'/>
         </Link>
       </div>
     </div>
