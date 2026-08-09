@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { BottomSheetHandle } from '@/features/auth/components/customized/Bottom-Sheet/handle';
+import { BottomSheetHandle } from '@/features/auth/components/custom/Bottom-Sheet/handle';
 import {
   CLOSE_THRESHOLD,
   SNAP_POINTS,
-} from '@/features/auth/components/customized/Bottom-Sheet/constants';
+} from '@/features/auth/components/custom/Bottom-Sheet/constants';
 
 type BottomSheetProps = {
   open: boolean;
@@ -104,7 +104,7 @@ export function BottomSheet({ open, onClose, children }: BottomSheetProps) {
         style={{
           transform: `translateY(${translateY}px)`,
         }}
-        className={`fixed bottom-0 left-0 w-full rounded-t-3xl bg-white p-6 shadow-2xl md:hidden touch-none select-none
+        className={`fixed bottom-0 left-0 w-full rounded-t-3xl bg-white p-3 shadow-2xl md:hidden touch-none select-none
             ${dragging ? '' : 'transition-transform duration-300 ease-out'}`}
       >
         <div className="flex justify-center pb-0">

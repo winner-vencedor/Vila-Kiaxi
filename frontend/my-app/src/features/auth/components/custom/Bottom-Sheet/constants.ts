@@ -4,4 +4,4 @@ export const SNAP_POINTS = {
   COLLAPSED: 550,
 };
 
-export const CLOSE_THRESHOLD = 700;
+export const CLOSE_THRESHOLD = 400;
