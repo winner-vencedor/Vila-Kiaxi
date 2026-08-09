@@ -34,7 +34,7 @@ O sistema foi projetado para oferecer uma experiência simples, rápida e intuit
 ---
 
 # Usuários do sistema
-- Visitante
+- Usuário com
 - Jogadores.
 - administrador.
 
@@ -54,16 +54,15 @@ O sistema foi projetado para oferecer uma experiência simples, rápida e intuit
 Características do que o sistema pode fazer.
 
 - RF01- Agendar jogos.
-- RF02- cadastrar jogadores.
-- RF03- eliminar jogadores.
-- RF04- confirmar presença.
-- RF05- desconfirmar presença.
-- RF06- apresentar histórico de todos os jogos.
-- RF07- apresentar estatistica de todos os jogos.
-- RF08- apresentar estatistica de cada jogador.
-- RF09- comunicação entre os jogadores(chat).
-- RF10- apresentar ranking da equipa(melhor marcador,assistente,defesa,etc).
-- RF11- cadastrar visitantes.
+- RF02- Permitir cadastrar jogadores.
+- RF03- Remover participante do jogo.
+- RF04- Usuário pode confirmar ou desconfirmar presença. 
+- RF05- apresentar histórico de todos os jogos.
+- RF06- apresentar estatistica de todos os jogos.
+- RF07- apresentar estatistica de cada jogador.
+- RF08- comunicação entre os jogadores(chat).
+- RF09- apresentar ranking da equipa(melhor marcador,assistente,defesa,etc).
+- RF10- cadastrar usuários comuns.
 
   ---
 
@@ -83,7 +82,7 @@ Característica da qualidade do sistema.
 ````
 
 - 1.Quem vai usar o sistema?
-- R:Visitante,Jogadores e administrador.
+- R:Usuário comum,Jogadores e administrador.
 
 - 2.Maior problema hoje?
 - R:actualmente a uma desorganização no agendamento dos jogos,na confirmação de presença ou participação dos jogadores,
@@ -110,14 +109,14 @@ falta de análise dos históricos de cada jogos pois não são registrados,pouca
 ## Regras de Negócio
 Lógica de negócio do sistema.
 
-- RNO1-Cada visitante pode pedir para se tornar um jodador.
-- RN02-Cada jogador deve ter apenas uma conta.
+- RNO1-Um usuário comum pode pedir para se tornar um jodador.
+- RN02-Cada usuário deve ter apenas uma conta.
 - RN03-Apenas os administradores podem aceitar ou recusar um pedido de adesão a equipe.
-- RN04-Apenas os administradores podem excluir jogadores.
+- RN04-Apenas os administradores podem remover jogadores da equipe.
 - RN05-Os jogos serão agendados pelos administradores.
 - RN06-Os jogadores podem enviar sugestão de agendamento de jogo aos administradores.
 - RN07-Apenas os jogadores podem confirmar ou desconfirmar a presença num determinado jogo.
-- RN08-Todos os usuários podem ter acesso as informações sobre o histórico,estatísticas,ranking,jogo agendado.
+- RN08-Todos os usuários autenticados podem ter acesso as informações sobre o histórico,estatísticas,ranking,jogo agendado.
 - RN09-Apenas os jogadores e administradores podem trocar mensagens dentro do sistema.
-- RN10-Apenas os administradores podem criar e actualizar os histórico,estatística e rankings da equipa.
+- RN10-Apenas os administradores podem registrar o resultado oficial de um jogo.
 
