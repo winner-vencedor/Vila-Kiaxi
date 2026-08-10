@@ -4,25 +4,17 @@
 import Link from 'next/link';
 import { MailIcon, LockIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {useForm} from "react-hook-form"
-import {zodResolver} from "@hookform/resolvers/zod"
-import {z} from "zod"
-import {useRouter} from "next/navigation"
-import {UserLoginFormSchema} from "@/features/auth/schemas/LoginUserSchema"
+import { useRouter } from 'next/navigation';
+import {UserLoginFormData} from "@/features/auth/schemas/LoginUserSchema"
 import { useState } from 'react';
+import {useLoginForm} from "@/features/auth/hooks/loginForm"
 
-type UserLoginFormData=z.infer<typeof UserLoginFormSchema>
 
 export default function FormLogin() {
-const {register ,
-  handleSubmit,
-   formState:{errors}}
-   =useForm<UserLoginFormData>({
-    resolver:zodResolver(UserLoginFormSchema)
-   })
+const {register, handleSubmit, formState:{errors}}=useLoginForm()
 const [show,setShow]=useState("")
 
-const {push}=useRouter()
+const router=useRouter()
 
 
 
@@ -32,7 +24,7 @@ const {push}=useRouter()
      const emeil="winner@gmail.com"
     const pass="winner1234"
     if(data.email===emeil && data.password===pass){
-        push("/painel")
+        router.push("/home")
     }else{
         setShow(error)
     }

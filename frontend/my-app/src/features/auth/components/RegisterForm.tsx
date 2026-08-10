@@ -3,34 +3,31 @@ import RegisterImage from '@/assets/Sign up-bro.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MailIcon, LockIcon, User, Phone, Lock } from 'lucide-react';
-import {useForm} from "react-hook-form"
-import {z} from "zod"
-import {zodResolver} from "@hookform/resolvers/zod"
-import { useState } from 'react';
-import {createUserFormSchema} from "@/features/auth/schemas/CreateUserFormSchema"
-
-
-
-type createUserFormData=z.infer<typeof createUserFormSchema>
-
+import {createUserFormData} from "@/features/auth/schemas/CreateUserFormSchema"
+import { useState} from 'react';
+import {useRegisterForm} from "@/features/auth/hooks/registerForm"
+import ModalSucess from "@/features/auth/components/SucessModal"
+import {useRouter} from "next/navigation"
 
 export default function RegisterForm() {
+  const {register, handleSubmit, formState:{errors,isValid}}=useRegisterForm()
+  const [ShowSucess,setShowSucess]=useState(false)
   const [show,setshow]=useState("")
+  const router=useRouter()
 
-  const {register,
-    handleSubmit,
-    formState:{errors,isValid}}
-    =useForm<createUserFormData>({
-    resolver:zodResolver(createUserFormSchema ),
-    mode:"onChange"
-  })
-
-
-  function create(data:createUserFormData){
+   function create(data:createUserFormData){
     ///aqui dentro vou fazer o post para o banco de dados
 
-    setshow(JSON.stringify(data,null,2))
+       setShowSucess(true)
+    // router.push("/home")
+
+
+setshow(JSON.stringify(data,null,2))
+
+
+
   }
+
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center ">
@@ -75,6 +72,7 @@ export default function RegisterForm() {
                   {...register("phone")}
                 />
               </div>
+              {errors.phone && <span className='text-red-600'>{errors.phone.message}</span>}
             </div>
 
             <div className="space-y-1">
@@ -170,6 +168,13 @@ export default function RegisterForm() {
           </div>
         </div>
       </div>
+      {
+                ShowSucess &&(
+                  <ModalSucess
+                    onclose={()=>setShowSucess(false)}
+                  />
+                )
+              }
     </div>
   );
 }

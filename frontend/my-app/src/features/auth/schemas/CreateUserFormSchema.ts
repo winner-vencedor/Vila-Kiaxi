@@ -11,7 +11,7 @@ export const createUserFormSchema=z.object({
     phone:z.string()
     .min(9, "Número inválido")
     .max(9, "Número inválido")
-    .regex(   /^(\+244|244|0)?9[1-9]\d{7}$/, "Formato inválido"),
+    .regex(   /^(\+244|244|0)?9[1-9]\d{7}$/, "Formato inválido ex:923432234"),
     email:z.string()
     .nonempty("O email é obrigatório")
     .email("Formato de email inválido"),

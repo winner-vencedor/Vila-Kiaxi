@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-import { BottomSheet } from '@/features/auth/components/custom/Bottom-Sheet/index';
+// import { BottomSheet } from '@/features/auth/components/custom/Bottom-Sheet/index';
 import FootbalIlustration from '@/assets/Soccer-bro.svg';
 import FormLogin from '@/features/auth/components/Form';
 
