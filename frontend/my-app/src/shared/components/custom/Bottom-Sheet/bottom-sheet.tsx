@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { BottomSheetHandle } from '@/features/auth/components/custom/Bottom-Sheet/handle';
+import { BottomSheetHandle } from '@/shared/components/custom/Bottom-Sheet/handle';
 import {
   CLOSE_THRESHOLD,
   SNAP_POINTS,
-} from '@/features/auth/components/custom/Bottom-Sheet/constants';
+} from '@/shared/components/custom/Bottom-Sheet/constants';
 
 type BottomSheetProps = {
   open: boolean;

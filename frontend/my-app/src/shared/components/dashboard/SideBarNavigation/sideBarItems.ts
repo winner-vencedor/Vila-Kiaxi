@@ -1,4 +1,4 @@
-import { Home, CalendarPlus, Bookmark, UserRound ,MessageSquare,SettingsIcon,Gamepad2} from 'lucide-react';
+import { Home, CalendarPlus, Bookmark, UserRound ,MessageSquare,SettingsIcon,Gamepad2,LucideUsers2} from 'lucide-react';
 
 export const SideBarItems = [
   { id: 'inicio', label: 'Home', icon: Home, href: '/home' },
@@ -10,8 +10,8 @@ export const SideBarItems = [
   },
   { id: 'historico',
      label: 'Histórico',
-      icon: Bookmark, 
-      href: '/history' 
+      icon: Bookmark,
+      href: '/match-history'
     },
   { id: 'perfil',
      label: 'Perfil',
@@ -22,18 +22,25 @@ export const SideBarItems = [
         id:"chat",
         label:"Chat",
         icon:MessageSquare,
-        href:"/chat"
+        href:"/messages"
+     }
+     ,
+     {
+      id:"plantel",
+      label:"Plantel",
+      icon:LucideUsers2,
+      href:"/squad"
+     },
+     {
+        id:"games",
+        label:"Games",
+        icon:Gamepad2,
+        href:"/matches"
      },
      {
         id:"settings",
         label:"Settings",
         icon:SettingsIcon,
         href:"/settings"
-     },
-     {
-        id:"games",
-        label:"Games",
-        icon:Gamepad2,
-        href:"/games"
      }
 ];
