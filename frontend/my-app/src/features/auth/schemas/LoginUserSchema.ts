@@ -3,6 +3,7 @@ import {z} from "zod"
 
 export const UserLoginFormSchema=z.object({
     email:z.string()
+    .trim()
     .nonempty("O email é obrigatório")
     .email("Formato de email inválido"),
     password:z.string().nonempty("A password é obrigatório"),

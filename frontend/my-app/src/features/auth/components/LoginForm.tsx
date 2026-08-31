@@ -8,7 +8,7 @@ import FormLogin from '@/features/auth/components/Form';
 export default function LoginForm() {
   const [open, setopen] = useState(false);
   return (
-    <div className="min-h-screen flex  bg-white items-center justify-center">
+    <div className="min-h-screen flex bg-white text-gray-900 items-center justify-center">
       <div className="w-full max-w-6xl  grid  lg:grid-cols-2 gap-2 items-center justify-center ">
         <div className="flex items-center justify-center p-10  ">
           <Image
@@ -37,7 +37,7 @@ export default function LoginForm() {
             </Button>
 
             <Button className="text-zinc-100 text-center md:hidden bg-gray-400 rounded-2xl p-4.5 w-full text-xl font-semibold hover:bg-gray-600">
-              <Link href="/cadastrar">Cadastrar</Link>
+              <Link href="/register">Cadastrar</Link>
             </Button>
           </div>
 

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import {UserLoginFormData} from "@/features/auth/schemas/LoginUserSchema"
 import { useState } from 'react';
-import {useLoginForm} from "@/features/auth/hooks/loginForm"
+import {useLoginForm} from "@/features/auth/hooks/useLoginForm"
 
 
 export default function FormLogin() {
@@ -25,16 +25,18 @@ const router=useRouter()
     const pass="winner1234"
     if(data.email===emeil && data.password===pass){
         router.push("/home")
+    }else if(data.email==="admin@gmail.com" && data.password==="admin"){
+        router.push("/dashboard")
     }else{
-        setShow(error)
+      setShow(error)
     }
 
     // setShow(JSON.stringify(data,null,2))
   }
 
   return (
-    <div className="">
-      <div className="relative flex flex-col p-5 justify-center lg:rounded-none md:rounded-none h-full  text-gray-700 lg:mt-0">
+    <div className="bg-white text-gray-900">
+      <div className="relative flex flex-col p-5 justify-center lg:rounded-none md:rounded-none h-full text-gray-900 lg:mt-0">
         <div className="mb-6 ">
           <h2 className="text-left text-3xl font-mono">Vila-Kiaxi</h2>
           <p className="text-left font-mono">Bem-vindo de volta.</p>
@@ -49,7 +51,7 @@ const router=useRouter()
             <input
               type="email"
               placeholder="Email"
-              className="w-full pl-10 pr-4 py-3 bg-zinc-100  rounded-2xl outline-none transition-all text-gray-600  "
+              className="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-2xl outline-none transition-all text-gray-900 placeholder:text-gray-400"
               {...register("email")}
             />
           </div>
@@ -62,7 +64,7 @@ const router=useRouter()
             <input
               type="Password"
               placeholder="Password"
-              className="w-full pl-10 pr-4 py-3 bg-zinc-100 text-gray-600  rounded-2xl outline-none transition-all "
+              className="w-full pl-10 pr-4 py-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all placeholder:text-gray-400"
               {...register("password")}
 
             />
@@ -81,12 +83,12 @@ const router=useRouter()
               <span className="font-mini">Lembrar da senha</span>
             </div>
             <div>
-              <Link href="/recover">Esqueceu a senha?</Link>
+              <Link href="/forgot-password">Esqueceu a senha?</Link>
             </div>
           </div>
           <Button
             type="submit"
-            className="bg-gray-600 w-full rounded-2xl p-6 font-mono text-white hover:bg-gray-800"
+            className="bg-gray-600 text-white w-full rounded-2xl p-6 font-mono hover:bg-gray-700"
           >
             Entrar
           </Button>
@@ -94,11 +96,11 @@ const router=useRouter()
 
         <div className="mt-8 text-sm space-x-2 text-center">
           <Link
-            href="/cadastrar"
-            className="text-gray-600 font-normal hover:underline"
+            href="/register"
+            className="text-gray-500 font-normal hover:text-gray-900 hover:underline"
           >
             Não tens uma conta?{' '}
-            <span className="text-gray-600 font-bold hover:underline">
+              <span className="text-gray-900 font-bold hover:underline">
               Criar conta
             </span>
           </Link>

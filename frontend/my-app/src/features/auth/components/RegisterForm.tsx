@@ -3,9 +3,10 @@ import RegisterImage from '@/assets/Sign up-bro.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MailIcon, LockIcon, User, Phone, Lock } from 'lucide-react';
+// import {Toaster,toast} from "sonner"
 import {createUserFormData} from "@/features/auth/schemas/CreateUserFormSchema"
 import { useState} from 'react';
-import {useRegisterForm} from "@/features/auth/hooks/registerForm"
+import {useRegisterForm} from "@/features/auth/hooks/useRegisterForm"
 import ModalSucess from "@/features/auth/components/SucessModal"
 import {useRouter} from "next/navigation"
 
@@ -19,7 +20,11 @@ export default function RegisterForm() {
     ///aqui dentro vou fazer o post para o banco de dados
 
        setShowSucess(true)
-    // router.push("/home")
+       setTimeout(()=>{
+        setShowSucess(false)
+        router.push("/home")
+       },2000)
+
 
 
 setshow(JSON.stringify(data,null,2))
@@ -28,9 +33,8 @@ setshow(JSON.stringify(data,null,2))
 
   }
 
-
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center ">
+    <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
       <div className="w-full max-w-6xl  grid  lg:grid-cols-2 gap-2 items-center justify-center ">
         <div className="flex items-center justify-center p-10   ">
           <Image
@@ -41,7 +45,7 @@ setshow(JSON.stringify(data,null,2))
           />
         </div>
 
-        <div className="relative flex flex-col p-5 justify-center lg:rounded-none md:rounded-none h-full  text-gray-700 lg:mt-0">
+        <div className="relative flex flex-col p-5 justify-center lg:rounded-none md:rounded-none h-full text-gray-900 lg:mt-0">
           <div className="mb-6 ">
             <h2 className="text-left text-3xl font-mono">Cadastrar</h2>
             <p className="text-left font-mono">Por favor, registre-se para continuar.</p>
@@ -54,7 +58,7 @@ setshow(JSON.stringify(data,null,2))
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
-                  className="w-full pl-10 pr-4 py-3 bg-zinc-100  rounded-2xl outline-none transition-all  "
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all placeholder:text-gray-400"
                   type="text"
                   placeholder="Nome de usuário"
                   {...register("name")}
@@ -68,7 +72,7 @@ setshow(JSON.stringify(data,null,2))
                 <input
                   type="tel"
                   placeholder="Número de celular"
-                  className="w-full pl-10 pr-4 py-3 bg-zinc-100  rounded-2xl outline-none transition-all  "
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all placeholder:text-gray-400"
                   {...register("phone")}
                 />
               </div>
@@ -79,9 +83,12 @@ setshow(JSON.stringify(data,null,2))
               <div className="text-gray-400">
                 <label className="text-gray-400">Gênero</label>
                 <select
-                  className="w-full p-3 bg-zinc-100  rounded-2xl outline-none transition-all "
+                  className="w-full p-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all"
                   {...register("gender")}
                 >
+                  <option value="" disabled>
+                    Seleccione um género
+                  </option>
                   <option value="Masculino">Masculino</option>
                   <option value="Feminino">Feminino</option>
                 </select>
@@ -94,7 +101,7 @@ setshow(JSON.stringify(data,null,2))
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full pl-10 pr-4 py-3 bg-zinc-100  rounded-2xl outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all placeholder:text-gray-400"
                 {...register("email")}
 
               />
@@ -108,7 +115,7 @@ setshow(JSON.stringify(data,null,2))
               <input
                 type="Password"
                 placeholder="Password"
-                className="w-full pl-10 pr-4 py-3 bg-zinc-100 rounded-2xl outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all placeholder:text-gray-400"
                 {...register("password")}
               />
             </div>
@@ -121,7 +128,7 @@ setshow(JSON.stringify(data,null,2))
                 <input
                   type="password"
                   placeholder="Confirmar senha"
-                  className="w-full pl-10 pr-4 py-3 bg-zinc-100  rounded-2xl outline-none transition-all "
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 text-gray-900 rounded-2xl outline-none transition-all placeholder:text-gray-400"
                   {...register("password_confirm")}
                 />
               </div>
@@ -149,8 +156,8 @@ setshow(JSON.stringify(data,null,2))
             <button
               type="submit"
               disabled={!isValid}
-              className={` w-full rounded-2xl py-4 text-white font-mono ${
-                isValid ? "bg-gray-600 hover:bg-gray-800" :"bg-gray-600"
+              className={`w-full rounded-2xl py-4 font-mono ${
+                isValid ? "bg-gray-600 text-white hover:bg-gray-700" : "bg-gray-100 text-gray-400"
               }`}
             >
               Cadastrar
@@ -160,7 +167,7 @@ setshow(JSON.stringify(data,null,2))
           <div className="mt-6 text-center text-sm pb-4">
             <Link href="/login" className="text-gray-500">
               Já possui uma conta?{' '}
-              <span className="text-gray-600 font-bold hover:underline">
+              <span className="text-gray-900 font-bold hover:underline">
                 Faça login
               </span>
             </Link>
@@ -171,7 +178,10 @@ setshow(JSON.stringify(data,null,2))
       {
                 ShowSucess &&(
                   <ModalSucess
-                    onclose={()=>setShowSucess(false)}
+                    onclose={()=>{
+                      setShowSucess(false);
+                      // router.push("/home")
+                    }}
                   />
                 )
               }
