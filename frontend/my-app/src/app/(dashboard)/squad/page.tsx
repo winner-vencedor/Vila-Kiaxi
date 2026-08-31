@@ -5,13 +5,13 @@ import SearchButtoms from "@/features/plantel/components/search-buttoms";
 
 export default function dashboard(){
     return(
-        <div className="bg-gray-200">
+        <div className="bg-gray-300">
             <PlantelHeaderMobile/>
             <div className="p-3 flex flex-col gap-3">
             <SearchButtoms/>
-            <main>
+              <section>
                  <PlantelCardPlayers/>
-            </main>
+              </section>
 
 
             </div>
