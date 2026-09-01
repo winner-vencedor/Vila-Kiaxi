@@ -1,4 +1,4 @@
-import Theme from '@/features/settings/components/settings-theme';
+import Theme from '@/features/settings/components/appareance/settings-theme';
 
 export default function ThemeSelector() {
   return (
