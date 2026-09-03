@@ -15,28 +15,28 @@ export default function PersonalDetails() {
       <div className="flex flex-col gap-6">
         <h1 className="font-mono text-xl text-gray-950">Personal Details</h1>
         <div>
-          <div className="lg:grid lg:grid-cols-2 lg:gap-3 flex flex-col gap-3 justify-center">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-3 lg:items-center flex flex-col gap-3 justify-center">
             <div className="flex flex-col gap-1 ">
               <p className="text-gray-500">Nome</p>
-              <div className="border rounded-sm border-gray-600 p-1">
+              <div className="border rounded-sm border-gray-600 p-1 font-mono text-sm">
                 <span>João Cláudio Nsingi</span>
               </div>
             </div>
             <div className="flex flex-col gap-1 p-1">
               <h4 className="text-gray-500">Email</h4>
-              <div className=" border rounded-sm  border-gray-600 p-1 ">
+              <div className=" border rounded-sm  border-gray-600 p-1 font-mono text-sm ">
                 <span>JoãoCláudioNsingi@gmail.com</span>
               </div>
             </div>
             <div className="flex flex-col gap-1 ">
               <h4 className="text-gray-500">Telefone</h4>
-              <div className=" border rounded-sm border-gray-600 p-1">
+              <div className=" border rounded-sm border-gray-600 p-1 font-mono text-sm">
                 <span>952085664</span>
               </div>
             </div>
             <div className="flex flex-col gap-1">
               <h4 className="text-gray-500">genero</h4>
-              <div className="border rounded-sm border-gray-600  p-1">
+              <div className="border rounded-sm border-gray-600  p-1 font-mono text-sm">
                 <span>Masculino</span>
               </div>
             </div>
@@ -55,16 +55,16 @@ export default function PersonalDetails() {
                     </h1>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 items-center">
                     <div className="flex flex-col gap-1 ">
                       <p className="text-gray-500">Position</p>
-                      <div className="border rounded-sm border-gray-600 p-1">
+                      <div className="border rounded-sm border-gray-600 p-1 font-mono text-sm">
                         <span>{item.Position}</span>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 p-1">
                       <h4 className="text-gray-500">PreferredFoot</h4>
-                      <div className=" border rounded-sm  border-gray-600 p-1 ">
+                      <div className=" border rounded-sm  border-gray-600 p-1 font-mono text-sm ">
                         <span>{item.foot}</span>
                       </div>
                     </div>
