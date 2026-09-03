@@ -17,7 +17,7 @@ export default function BottomNavigation() {
       className="fixed bottom-0 left-0 right-0 z-50 border-t bg-zinc-100 border-gray-600 md:hidden"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <nav className="flex items-center justify-around  max-w-md mx-auto p-2">
+      <nav className="flex items-center justify-around  max-w-md mx-auto p-2 pb-4">
         {ButtomnavItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
