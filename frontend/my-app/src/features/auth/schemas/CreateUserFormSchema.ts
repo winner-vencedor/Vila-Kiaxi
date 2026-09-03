@@ -21,7 +21,8 @@ export const createUserFormSchema = z
       .string()
       .nonempty('O email é obrigatório')
       .email('Formato de email inválido'),
-    password: z.string().min(8, 'A senha precisa no mínimo 8 caracteres'),
+    password: z.string().min(8, 'A senha precisa no mínimo 8 caracteres')
+    .regex( /[!@#$%^&*(),.?":{}|<>]/, "Senha deve conter pelo menos um caractere especial"),
     password_confirm: z.string(),
     terms: z.boolean().refine((value) => value === true),
     gender: z.string().min(1, 'Seleccione um género'),

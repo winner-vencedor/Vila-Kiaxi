@@ -119,7 +119,7 @@ setshow(JSON.stringify(data,null,2))
                 {...register("password")}
               />
             </div>
-            {errors.password && <span  className='text-red-600'>{errors.password.message}</span>}
+            {errors.password && <span  className='text-red-600 text-sm'>{errors.password.message}</span>}
             </div>
 
             <div className="space-y-1">
