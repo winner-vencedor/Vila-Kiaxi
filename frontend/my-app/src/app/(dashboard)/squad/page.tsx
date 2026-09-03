@@ -1,6 +1,6 @@
-import PlantelCardPlayers from "@/features/plantel/components/plantel-card-player";
-import PlantelHeaderMobile from "@/features/plantel/components/plantel-header-mobile";
-import SearchButtoms from "@/features/plantel/components/search-buttoms";
+import PlantelCardPlayers from "@/features/squad/components/plantel-card-player";
+import PlantelHeaderMobile from "@/features/squad/components/plantel-header-mobile";
+import SearchButtoms from "@/features/squad/components/search-buttoms";
 
 
 export default function dashboard(){
