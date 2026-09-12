@@ -17,7 +17,7 @@ export default function PlantelCardPlayers() {
                 return (
                   <Card
                     key={item.id}
-                    className="min-w-0 max-h-70 p-1 md:p-0 shadow-2xl bg-gray-50 border hover:translate-1"
+                    className="min-w-0 max-h-70 p-1 md:p-0 shadow-2xl bg-card border hover:translate-1"
                   >
                     <CardContent className="p-3 space-y-2">
                       <div>
@@ -25,17 +25,17 @@ export default function PlantelCardPlayers() {
                           src={item.photo}
                           alt=""
                           priority
-                          className="h-20  w-20 rounded-2xl"
+                          className="h-20  w-20 rounded-xl"
                         />
                       </div>
 
-                      <CardFooter className="flex flex-col items-start justify-center gap-1 bg-gray-50">
-                        <h1 className="min-w-0 wrap-break-word font-mono text-gray-900">
+                      <CardFooter className="flex flex-col items-start justify-center gap-1 bg-card">
+                        <h1 className="min-w-0 wrap-break-word font-sans text-foreground">
                           {item.name}
                         </h1>
                         <div className="hidden md:flex md:flex-col ">
                           <div className="flex gap-1">
-                            <p className="font-mono">Age:</p>
+                            <p className="from-accent-foreground">Age:</p>
                             <span className="font-mono text-emerald-600">
                               {item.age}
                             </span>
