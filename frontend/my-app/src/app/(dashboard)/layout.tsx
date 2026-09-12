@@ -5,6 +5,7 @@ import BottomNavigation from "@/shared/components/dashboard/BottomNav/bottomNavi
 import Header from "@/shared/components/dashboard/Nav/header"
 import Sidebar from "@/shared/components/dashboard/SideBarNavigation/sidebar"
 import { sideBarContext } from "@/shared/components/dashboard/SideBarNavigation/hooks/useSidebar"
+import HeaderMobile from "@/shared/components/header-mobile"
 export default function DashboardLayout({
   children
 }: {
@@ -15,7 +16,8 @@ export default function DashboardLayout({
   return (
 
     <sideBarContext.Provider value={{ expanded, setexpanded }}>
-      <div className="min-h-screen bg-zinc-50">
+      <div className="min-h-screen bg-background text-foreground">
+        <HeaderMobile/>
         <Sidebar />
         <div className={`min-w-0 transition-[margin] duration-200 ${expanded ? "md:ml-37" : "md:ml-20"}`}>
           <Header />
