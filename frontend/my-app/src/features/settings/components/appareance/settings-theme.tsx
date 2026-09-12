@@ -9,15 +9,13 @@ export default function Theme() {
   const router = useRouter();
 
   return (
-    <div className="bg-gray-300  min-h-screen">
-      <header className="h-16 bg-gray-50 text-2xl font-mono text-gray-900 flex justify-center items-center md:hidden">
-        <h2>Theme</h2>
-      </header>
+    <div className="bg-background dark:bg-background min-h-screen pt-21 md:pt-0">
+
 
       <div className='p-2 space-y-4'>
         <button
           onClick={() => router.back()}
-          className="flex gap-2 items-center text-foreground font-mono hover:text-emerald-700"
+          className="flex gap-2 items-center text-foreground font-mono dark:text-foreground dark:hover:text-primary hover:text-emerald-700"
         >
           <ArrowLeft />
           <span>voltar</span>

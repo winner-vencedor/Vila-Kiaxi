@@ -13,7 +13,7 @@ export default function PersonalDetails() {
   return (
     <div className="  space-y-6  p-2">
       <div className="flex flex-col gap-6">
-        <h1 className="font-mono text-xl text-gray-950">Personal Details</h1>
+        <h1 className="font-mono text-xl text-foreground dark:text-foreground">Personal Details</h1>
         <div>
           <div className="lg:grid lg:grid-cols-2 lg:gap-3 lg:items-center flex flex-col gap-3 justify-center">
             <div className="flex flex-col gap-1 ">
@@ -50,7 +50,7 @@ export default function PersonalDetails() {
               return (
                 <div  className="flex flex-col gap-6" key={item.id}>
                   <div>
-                    <h1 className="font-mono text-xl text-gray-950">
+                    <h1 className="font-mono text-xl text-foreground dark:text-foreground">
                       Player Details
                     </h1>
                   </div>

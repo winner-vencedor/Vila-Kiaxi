@@ -125,7 +125,7 @@ export default function EditProfile({ onClose }: EditProfileProps) {
       <div className="flex gap-4 items-center justify-end">
         <Button
         type='button'
-          className={`bg-red-400 text-white hover:bg-red-600 rounded-sm p-1 text-sm flex gap-1 items-center `}
+          className={`bg-red-400 text-background hover:bg-red-600 rounded-sm p-1 text-sm flex gap-1 items-center `}
           onClick={onClose}
         >
           <DeleteIcon className="w-4 h-4" />
