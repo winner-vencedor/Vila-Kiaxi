@@ -2,7 +2,7 @@ import fastify from "fastify"
 import {validatorCompiler,serializerCompiler,type ZodTypeProvider,jsonSchemaTransform} from "fastify-type-provider-zod"
 import {fastifySwagger} from "@fastify/swagger"
 import {fastifySwaggerUi} from "@fastify/swagger-ui"
-
+import {registerUser} from "./routes/auth/register.ts"
 
 const server=fastify({
     logger:true
@@ -27,9 +27,7 @@ server.register(fastifySwaggerUi,{
 server.setValidatorCompiler(validatorCompiler)
 server.setSerializerCompiler(serializerCompiler)
 
-server.get("/",(request,reply)=>{
-    return reply.send("ola")
-})
+server.register(registerUser,{prefix:"/auth"})
 
 
 export {server}

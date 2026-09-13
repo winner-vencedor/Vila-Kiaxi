@@ -17,7 +17,7 @@ export  const preferredFoot=pgEnum("preferrer_foot",[
 
 export const playerProfile=pgTable("player_profile",{
     id:uuid("id").primaryKey().defaultRandom(),
-    userId:uuid("user_id").notNull().references(()=>user.id),
+    userId:uuid("user_id").notNull().unique().references(()=>user.id),
     position:position("position").notNull(),
     weight:numeric("weighr").notNull(),
     height:numeric("heigth").notNull(),

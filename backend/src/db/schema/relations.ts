@@ -7,20 +7,18 @@ import {MatchParticipants} from "./Match-Participants.ts"
 import {match} from "./match.ts"
 import {message} from "./message.ts"
 import {playerProfile} from "./player-profile.ts"
+import {refreshToken} from "./refresh-token.ts"
 
 
 
 export const userRelations=relations(user,({one,many})=>({
-    playerProfile:one(playerProfile,{
-        fields:[user.id],
-        references:[playerProfile.id]
-    }),
+    playerProfile:one(playerProfile),
 
     messages:many(message),
-    MatchParticipants:many(MatchParticipants),
-    MatchSuggestion:many(MatchSuggestion),
-    MembersShipRequest:many(MembersShipRequest)
-    
+    matchParticipants:many(MatchParticipants),
+    matchSuggestion:many(MatchSuggestion),
+    membersShipRequest:many(MembersShipRequest),
+    refreshToken:many(refreshToken)
 
 
 }))
@@ -34,12 +32,12 @@ export const playerProfileRelations=relations(playerProfile,({one})=>({
 )
 
 export const matchRelations=relations(match,({many})=>({
-    MatchParticipants:many(MatchParticipants)
+    matchParticipants:many(MatchParticipants)
 }))
 
 
 export const messageRelations=relations(message,({one})=>({
-    users:one(user,{
+    user:one(user,{
         fields:[message.sendId],
         references:[user.id],
     }),
@@ -50,7 +48,7 @@ export const messageRelations=relations(message,({one})=>({
 }))
 
 export const MatchSuggestionRelations=relations(MatchSuggestion,({one})=>({
-    MatchSuggestion:one(user,{
+    user:one(user,{
         fields:[MatchSuggestion.userId],
         references:[user.id]
     })
@@ -58,7 +56,7 @@ export const MatchSuggestionRelations=relations(MatchSuggestion,({one})=>({
 
 
 export const MatchParticipantsRelations=relations(MatchParticipants,({one})=>({
-    MatchParticipants:one(match,{
+    match:one(match,{
         fields:[MatchParticipants.matchId],
         references:[match.id]
     }),
@@ -69,12 +67,20 @@ export const MatchParticipantsRelations=relations(MatchParticipants,({one})=>({
 }))
 
 export const MembersShipRequestRelations=relations(MembersShipRequest,({one})=>({
-    MembersShipRequest:one(user,{
+    user:one(user,{
         fields:[MembersShipRequest.userId],
         references:[user.id]
     })
 }))
 
 export const chatRelations=relations(chat,({many})=>({
-    chat:many(chat)
+    messages:many(message)
+}))
+
+
+export const refreshTokenRelations=relations(refreshToken,({one})=>({
+    user:one(user,{
+        fields:[refreshToken.userId],
+        references:[user.id]
+    })
 }))

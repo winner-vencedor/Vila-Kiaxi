@@ -1,1 +1,13 @@
-Get http://localhost:3000
+POST  http://localhost:3000/auth/register
+Content-Type: application/json
+
+
+{
+    "name":"joao claudio nsingi",
+    "email":"Judd.Waters@hotmail.com",
+    "gender":"MALE",
+    "password":"winnerhellow@",
+    "phone":"952085664",
+    "terms":true
+
+}

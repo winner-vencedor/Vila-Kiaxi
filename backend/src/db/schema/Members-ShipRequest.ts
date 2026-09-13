@@ -11,7 +11,7 @@ export const MembersShipRequest = pgTable("members_shipRequest", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id,{onDelete:"cascade"}),
   Status: MembersShipRequestStatus().notNull().default("PENDING"),
   requestedAt: timestamp("requestedAt", { withTimezone: true })
     .notNull()

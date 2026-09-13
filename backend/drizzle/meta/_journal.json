@@ -8,6 +8,41 @@
       "when": 1789161827843,
       "tag": "0000_colorful_mathemanic",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789316486605,
+      "tag": "0001_mature_tattoo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789316922147,
+      "tag": "0002_fat_saracen",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789317363081,
+      "tag": "0003_fast_rage",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789319828664,
+      "tag": "0004_panoramic_dagger",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789322068900,
+      "tag": "0005_hot_photon",
+      "breakpoints": true
     }
   ]
 }
