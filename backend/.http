@@ -4,10 +4,36 @@ Content-Type: application/json
 
 {
     "name":"joao claudio nsingi",
-    "email":"Judd.Waters@hotmail.com",
+    "email":"winnerwr6@gmail.com",
     "gender":"MALE",
     "password":"winnerhellow@",
-    "phone":"952085664",
+    "phone":"941085664",
     "terms":true
 
+}
+
+###
+POST  http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email":"Judd.Waters@hotmail.com",
+    "password":"winnerhellow@"
+}
+
+###
+POST  http://localhost:3000/auth/refresh
+
+
+###
+POST  http://localhost:3000/auth/logout
+
+
+
+###
+POST  http://localhost:3000/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email":"winnerwr6@gmail.com"
 }

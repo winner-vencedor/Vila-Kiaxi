@@ -1,7 +1,7 @@
 import type {FastifyPluginAsyncZod} from "fastify-type-provider-zod"
 import {registerSchema,registerResponse} from "../../lib/zod/register-schema.ts"
 import {or,eq} from "drizzle-orm"
-import {hash} from "argon2"
+import {hashPassword} from "../../utils/password.ts"
 import {z} from "zod"
 import {db} from "../../db/index.ts"
 import {user} from "../../db/schema/user.ts"
@@ -35,7 +35,7 @@ export const registerUser:FastifyPluginAsyncZod= async(server)=>{
         }
 
 
-        const passwordHash=await hash(password)
+        const passwordHash= await hashPassword(password)
 
         const [userRegister]= await db.insert(user).values({
             name,

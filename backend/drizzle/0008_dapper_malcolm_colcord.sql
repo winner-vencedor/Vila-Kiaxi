@@ -1,0 +1,1 @@
+ALTER TABLE "password_reset" ALTER COLUMN "used_at" DROP NOT NULL;

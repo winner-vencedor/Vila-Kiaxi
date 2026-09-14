@@ -1,0 +1,81 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+
+import { and, eq, isNull } from "drizzle-orm";
+import { hash } from "argon2";
+
+import { db } from "../../db/index.ts";
+
+import { passwordResetToken } from "../../db/schema/password-reset-token.ts";
+import { user } from "../../db/schema/user.ts";
+
+import {
+  resetPasswordSchema,
+  resetPasswordResponse,
+} from "./schemas/reset-password.schema.ts";
+
+import { hashPasswordResetToken } from "../../lib/password-reset.ts";
+
+export const resetPassword: FastifyPluginAsyncZod = async (server) => {
+  server.post(
+    "/reset-password",
+    {
+      schema: {
+        tags: ["Auth"],
+        summary: "Reset password",
+        body: resetPasswordSchema,
+        response: {
+          200: resetPasswordResponse,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { token, password } = request.body;
+
+      const tokenHash = hashPasswordResetToken(token);
+
+      const [resetToken] = await db
+        .select()
+        .from(passwordResetToken)
+        .where(
+          and(
+            eq(passwordResetToken.tokenHash, tokenHash),
+            isNull(passwordResetToken.usedAt),
+          ),
+        )
+        .limit(1);
+
+      if (!resetToken) {
+        return reply.status(400).send({
+          message: "Token inválido ou já utilizado.",
+        });
+      }
+
+      if (resetToken.expiresAt <= new Date()) {
+        return reply.status(400).send({
+          message: "Token expirado.",
+        });
+      }
+
+      const passwordHash = await hash(password);
+
+      await db
+        .update(user)
+        .set({
+          password: passwordHash,
+          updatedAt: new Date(),
+        })
+        .where(eq(user.id, resetToken.userId));
+
+      await db
+        .update(passwordResetToken)
+        .set({
+          usedAt: new Date(),
+        })
+        .where(eq(passwordResetToken.id, resetToken.id));
+
+      return reply.status(200).send({
+        message: "Senha alterada com sucesso.",
+      });
+    },
+  );
+};

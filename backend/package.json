@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/node": "^22.20.2",
     "drizzle-kit": "^0.31.10",
+    "maildev": "^3.0.0-rc.2",
     "typescript": "^7.0.2"
   },
   "dependencies": {
@@ -32,6 +33,7 @@
     "fastify-plugin": "^6.0.0",
     "fastify-type-provider-zod": "^7.0.0",
     "pg": "^8.23.0",
+    "resend": "^6.28.0",
     "zod": "^4.6.1"
   }
 }

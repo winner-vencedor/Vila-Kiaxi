@@ -43,6 +43,34 @@
       "when": 1789322068900,
       "tag": "0005_hot_photon",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789401064429,
+      "tag": "0006_solid_doorman",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789405609075,
+      "tag": "0007_puzzling_luckman",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789407568896,
+      "tag": "0008_dapper_malcolm_colcord",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789409016092,
+      "tag": "0009_dusty_sage",
+      "breakpoints": true
     }
   ]
 }
