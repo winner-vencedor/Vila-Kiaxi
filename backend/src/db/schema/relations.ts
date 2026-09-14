@@ -8,6 +8,7 @@ import {match} from "./match.ts"
 import {message} from "./message.ts"
 import {playerProfile} from "./player-profile.ts"
 import {refreshToken} from "./refresh-token.ts"
+import {passwordResetToken} from "./reset-password.ts"
 
 
 
@@ -18,7 +19,8 @@ export const userRelations=relations(user,({one,many})=>({
     matchParticipants:many(MatchParticipants),
     matchSuggestion:many(MatchSuggestion),
     membersShipRequest:many(MembersShipRequest),
-    refreshToken:many(refreshToken)
+    refreshToken:many(refreshToken),
+    passwordReset:many(passwordResetToken)
 
 
 }))
@@ -81,6 +83,13 @@ export const chatRelations=relations(chat,({many})=>({
 export const refreshTokenRelations=relations(refreshToken,({one})=>({
     user:one(user,{
         fields:[refreshToken.userId],
+        references:[user.id]
+    })
+}))
+
+export const passwordResetRelations=relations(passwordResetToken,({one})=>({
+    passwordReset:one(user,{
+        fields:[passwordResetToken.userId],
         references:[user.id]
     })
 }))

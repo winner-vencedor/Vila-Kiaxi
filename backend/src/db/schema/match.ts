@@ -1,4 +1,4 @@
-import {pgEnum,pgTable,uuid,text,date,time,varchar,timestamp} from "drizzle-orm/pg-core"
+import {pgEnum,pgTable,uuid,text,date,time,varchar,timestamp, integer} from "drizzle-orm/pg-core"
 
 
 export const MacthStatus=pgEnum("match_status",[
@@ -11,6 +11,8 @@ export const MacthStatus=pgEnum("match_status",[
 export const match=pgTable("match",{
     id:uuid("id").primaryKey().defaultRandom(),
     location:varchar("location",{length:255}).notNull(),
+    ourSore:integer("our_score"),
+    opponentScore:integer("opponent_score"),
     time:time("time").notNull(),
     date:date("date").notNull(),
     opponent:varchar("opponent",{length:255}).notNull(),
