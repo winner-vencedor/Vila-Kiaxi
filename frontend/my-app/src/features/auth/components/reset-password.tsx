@@ -4,13 +4,43 @@ import { Button } from "@/components/ui/button";
 import {useResetPassword} from "@/features/auth/hooks/useReset-password"
 import {resetPasswordData} from "@/features/auth/schemas/reset-password"
 import {useRouter} from "next/navigation"
+import { toast } from "sonner";
 export default function ResetPassword() {
   const router=useRouter()
   const {formState:{errors},handleSubmit,register}=useResetPassword()
 
-  function resetpassword(data:resetPasswordData){
-    if(data.password===data.confirm_password){
+  async function resetpassword(data:resetPasswordData){
+    try{
+      const token = new URLSearchParams(window.location.search).get("token")
+
+      if (!token) {
+        toast.error("Token de recuperação não informado")
+        return
+      }
+
+      const query = new URLSearchParams({ token })
+      const response= await fetch(`/api/auth/reset-password?${query.toString()}`,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(data)
+      })
+
+      const result=await response.json()
+
+      if(!response.ok){
+        toast.error(result.message)
+        return
+      }
+      toast.success(result.message)
+      console.log(result)
+
       router.push("/login")
+      router.refresh()
+    }catch(err){
+      console.log(err)
+      toast.error(`Não foi possivel conectar-se ao servidor`)
     }
   }
   return (

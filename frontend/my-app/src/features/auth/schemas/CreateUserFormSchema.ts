@@ -5,6 +5,8 @@ export const createUserFormSchema = z
     name: z
       .string()
       .nonempty('O nome é obrigatório')
+      .min(10,"No minímo 10 caracteres")
+      .max(100)
       .transform((name) => {
         return name
           .trim()
@@ -25,7 +27,7 @@ export const createUserFormSchema = z
     .regex( /[!@#$%^&*(),.?":{}|<>]/, "Senha deve conter pelo menos um caractere especial"),
     password_confirm: z.string(),
     terms: z.boolean().refine((value) => value === true),
-    gender: z.string().min(1, 'Seleccione um género'),
+    gender: z.enum(["MALE","FEMALE"]),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.password_confirm) {

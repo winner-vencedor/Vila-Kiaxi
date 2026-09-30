@@ -3,35 +3,21 @@ import RegisterImage from '@/assets/Sign up-bro.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MailIcon, LockIcon, User, Phone, Lock } from 'lucide-react';
-// import {Toaster,toast} from "sonner"
-import {createUserFormData} from "@/features/auth/schemas/CreateUserFormSchema"
-import { useState} from 'react';
 import {useRegisterForm} from "@/features/auth/hooks/useRegisterForm"
 import ModalSucess from "@/features/auth/components/SucessModal"
 import {useRouter} from "next/navigation"
 
 export default function RegisterForm() {
-  const {register, handleSubmit, formState:{errors,isValid}}=useRegisterForm()
-  const [ShowSucess,setShowSucess]=useState(false)
-  const [show,setshow]=useState("")
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    create,
+    showSuccess,
+    resetSuccess,
+  } = useRegisterForm()
   const router=useRouter()
 
-   function create(data:createUserFormData){
-    ///aqui dentro vou fazer o post para o banco de dados
-
-       setShowSucess(true)
-       setTimeout(()=>{
-        setShowSucess(false)
-        router.push("/home")
-       },2000)
-
-
-
-setshow(JSON.stringify(data,null,2))
-
-
-
-  }
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
@@ -89,8 +75,8 @@ setshow(JSON.stringify(data,null,2))
                   <option value="" disabled>
                     Seleccione um género
                   </option>
-                  <option value="Masculino">Masculino</option>
-                  <option value="Feminino">Feminino</option>
+                  <option value="MALE" >Masculino</option>
+                  <option value="FEMALE">Feminino</option>
                 </select>
               </div>
             </div>
@@ -171,16 +157,15 @@ setshow(JSON.stringify(data,null,2))
                 Faça login
               </span>
             </Link>
-            <pre>{show}</pre>
           </div>
         </div>
       </div>
       {
-                ShowSucess &&(
+                showSuccess &&(
                   <ModalSucess
-                    onclose={()=>{
-                      setShowSucess(false);
-                      // router.push("/home")
+                    onFinish={()=>{
+                      resetSuccess();
+                      router.push("/home")
                     }}
                   />
                 )

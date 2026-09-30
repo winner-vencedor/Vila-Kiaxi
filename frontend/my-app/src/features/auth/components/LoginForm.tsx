@@ -1,4 +1,4 @@
-
+"use client"
 import Image from 'next/image';
 import FootbalIlustration from '@/assets/Soccer-bro.svg';
 import FormLogin from '@/features/auth/components/Form';
