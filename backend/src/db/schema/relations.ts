@@ -20,7 +20,7 @@ export const userRelations=relations(user,({one,many})=>({
     matchSuggestion:many(MatchSuggestion),
     membersShipRequest:many(MembersShipRequest),
     refreshToken:many(refreshToken),
-    passwordReset:many(passwordResetToken)
+    passwordResetToken:many(passwordResetToken)
 
 
 }))
@@ -88,7 +88,7 @@ export const refreshTokenRelations=relations(refreshToken,({one})=>({
 }))
 
 export const passwordResetRelations=relations(passwordResetToken,({one})=>({
-    passwordReset:one(user,{
+    user:one(user,{
         fields:[passwordResetToken.userId],
         references:[user.id]
     })

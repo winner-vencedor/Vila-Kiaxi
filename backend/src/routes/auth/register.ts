@@ -5,6 +5,7 @@ import {hashPassword} from "../../utils/password.ts"
 import {z} from "zod"
 import {db} from "../../db/index.ts"
 import {user} from "../../db/schema/user.ts"
+import { userRepository } from "../../repository/auth/user.repository.ts"
 
 
 export const registerUser:FastifyPluginAsyncZod= async(server)=>{
@@ -37,21 +38,23 @@ export const registerUser:FastifyPluginAsyncZod= async(server)=>{
 
         const passwordHash= await hashPassword(password)
 
-        const [userRegister]= await db.insert(user).values({
-            name,
-            email,
-            gender,
-            password:passwordHash,
-            phone,
-            terms,
-        }).returning({
-            name:user.name,
-            email:user.email,
-            gender:user.gender,
-            phone:user.phone,
-            terms:user.terms,
-            createdAt:user.createdAt
-        })
+        // const [userRegister]= await db.insert(user).values({
+        //     name,
+        //     email,
+        //     gender,
+        //     password:passwordHash,
+        //     phone,
+        //     terms,
+        // }).returning({
+        //     name:user.name,
+        //     email:user.email,
+        //     gender:user.gender,
+        //     phone:user.phone,
+        //     terms:user.terms,
+        //     createdAt:user.createdAt
+        // })
+
+        const userRegister= await userRepository.registerUser({name,email,gender,password:passwordHash,phone,terms})
 
         return reply.status(201).send(userRegister)
     })

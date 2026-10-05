@@ -1,6 +1,6 @@
 import type {FastifyPluginAsyncZod} from "fastify-type-provider-zod"
 import {z} from "zod"
-import {hasToken} from "../../utils/hash.ts"
+import {hasToken} from "../../utils/hash-token.ts"
 import {db} from "../../db/index.ts"
 import {eq} from "drizzle-orm"
 import {refreshToken} from "../../db/schema/refresh-token.ts"
@@ -10,6 +10,7 @@ import {refreshToken} from "../../db/schema/refresh-token.ts"
 export const userLogout:FastifyPluginAsyncZod=async (server)=>{
     server.post("/logout",{
         schema:{
+            tags:[`logout`],
             response:{
                 200:z.object({
                     message:z.string()

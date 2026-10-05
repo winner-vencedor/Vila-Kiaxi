@@ -1,5 +1,5 @@
 import type {FastifyPluginAsyncZod} from "fastify-type-provider-zod"
-import {hasToken} from "../../utils/hash.ts"
+import {hasToken} from "../../utils/hash-token.ts"
 import {createAccessToken,generateRefreshToken} from "../../utils/token.ts"
 import {eq} from "drizzle-orm"
 import  {z} from "zod"
@@ -37,6 +37,7 @@ export const userRefreshToken:FastifyPluginAsyncZod= async (server)=>{
             const [storedToken]= await db.select({
                 refreshTokenId:refreshToken.id,
                 userId:user.id,
+                email:user.email,
                 role:user.role,
                 revokeAt:refreshToken.revokeAt,
                 expiresAt:refreshToken.expiresAt,
@@ -77,6 +78,7 @@ export const userRefreshToken:FastifyPluginAsyncZod= async (server)=>{
 
         const newAccessToken=createAccessToken(
             server,
+            storedToken.email,
             storedToken.userId,
             storedToken.role
         )

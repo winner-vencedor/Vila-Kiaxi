@@ -28,3 +28,6 @@ export const user=pgTable("user",{
     updatedAt:timestamp("updated_at",{withTimezone:true}).notNull().defaultNow()
 
 })
+
+export type User=typeof user.$inferSelect
+export type UserInsertData=typeof user.$inferInsert

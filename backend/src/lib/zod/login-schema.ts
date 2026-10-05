@@ -1,12 +1,10 @@
 import { z } from "zod";
 export const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().trim(),
   password: z
     .string()
-    .min(8, "A senha deve ter pelo menos 8 caracteres")
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, {
-      message: "A senha deve conter pelo menos um caractere especial",
-    }),
+    .nonempty('A password é obrigatório'),
+    password_remember:z.boolean()
 });
 
 export const loginSchemaResponse = z.object({

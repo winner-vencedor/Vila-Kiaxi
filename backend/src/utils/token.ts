@@ -1,19 +1,23 @@
 import crypto from "node:crypto";
 import type { FastifyInstance } from "fastify";
 
+type UserRole = "USER" | "ADMIN" | "PLAYER";
+
 export function generateRefreshToken() {
-  return crypto.randomBytes(64).toString("base64url");
+  return crypto.randomBytes(64).toString("hex");
 }
 
 export function createAccessToken(
   server: FastifyInstance,
+  email:string,
   userId: string,
-  role: string,
+  role: UserRole,
 ) {
   return server.jwt.sign(
     {
       sub: userId,
-      role,
+      email:email,
+      role:role
     },
     {
       expiresIn: "15m",

@@ -12,3 +12,6 @@ export const refreshToken=pgTable("refresh_token",{
     expiresAt:timestamp("expires_at",{withTimezone:true}).notNull(),
     createdAt:timestamp("created_at",{withTimezone:true}).notNull().defaultNow()
 })
+
+export type RefreshToken= typeof refreshToken.$inferSelect
+export type NewRefreshToken= typeof refreshToken.$inferInsert

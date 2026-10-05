@@ -3,11 +3,11 @@ Content-Type: application/json
 
 
 {
-    "name":"joao claudio nsingi",
-    "email":"winnerwr6@gmail.com",
+    "name":"stevlio vezo",
+    "email":"winnerwr@gmail.com",
     "gender":"MALE",
-    "password":"winnerhellow@",
-    "phone":"941085664",
+    "password":"stelvio££££@",
+    "phone":"934434451",
     "terms":true
 
 }
@@ -17,8 +17,8 @@ POST  http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email":"Judd.Waters@hotmail.com",
-    "password":"winnerhellow@"
+    "email":"winnerwr@gmail.com",
+    "password":"winner2324@£"
 }
 
 ###
@@ -31,9 +31,18 @@ POST  http://localhost:3000/auth/logout
 
 
 ###
-POST  http://localhost:3000/auth/forgot-password
+POST  http://localhost:3333/auth/forgot-password
 Content-Type: application/json
 
 {
-    "email":"winnerwr6@gmail.com"
+    "email":"winnerwr@gmail.com"
+}
+
+###
+POST  http://localhost:3333/auth/reset-password
+Content-Type: application/json
+
+{
+    "token":"ec9c6243148e92c339e7454c32f6c33cdd50bf9918f5600db0fed801fa90dc3805e3e2159da9719c84dfb4d06fc0997bc42254c1b6478e38b73cba18884a1e17",
+    "password":"winner2324@£"
 }

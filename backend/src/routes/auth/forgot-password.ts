@@ -1,11 +1,11 @@
-import type {FastifyPluginAsyncZod} from "fastify-type-provider-zod"
-import {hasToken} from "../../utils/hash.ts"
-import {generateRefreshToken} from "../../utils/token.ts"
-import {db} from "../../db/index.ts"
-import {passwordResetToken,user} from "../../db/schema/index.ts"
-import {sendPasswordReset} from "../../services/resendEmail.ts"
-import {eq} from "drizzle-orm"
-import {z} from "zod"
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import { hasToken } from "../../utils/hash-token.ts"
+import { generateRefreshToken } from "../../utils/token.ts"
+import { db } from "../../db/index.ts"
+import { passwordResetToken, user } from "../../db/schema/index.ts"
+import {sendResetPassword} from "../../lib/resendEmail.ts"
+import { eq } from "drizzle-orm"
+import { z } from "zod"
 
 
 export const forgotPassword:FastifyPluginAsyncZod=async (server)=>{
@@ -30,7 +30,7 @@ export const forgotPassword:FastifyPluginAsyncZod=async (server)=>{
         .limit(1)
 
         if(!currentUser){
-            return reply.status(200).send({message: "Se o email existir, enviaremos instruções para recuperação da senha."})
+            return reply.status(200).send({message: "Email inexistente"})
         }
 
         const token=generateRefreshToken()
@@ -42,12 +42,12 @@ export const forgotPassword:FastifyPluginAsyncZod=async (server)=>{
             expiresAt:new Date(
                 Date.now() + 1000 * 60 * 15
             )
-        })
+        }).returning()
 
-        // console.log( `http://localhost:3000/reset-password?token=${token}`)
 
-        await sendPasswordReset(currentUser.email,token)
+        await sendResetPassword(currentUser.email,token)
 
         return reply.status(200).send({message:"Se o email existir, enviaremos instruções para recuperação da senha."})
+
     })
 }

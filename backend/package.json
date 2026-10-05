@@ -7,7 +7,9 @@
     "dev": "node --env-file .env --watch src/server.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "dev:email": "maildev",
+    "test":"vitest run"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +17,11 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^22.20.2",
+    "@types/nodemailer": "^8.0.1",
     "drizzle-kit": "^0.31.10",
     "maildev": "^3.0.0-rc.2",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
   },
   "dependencies": {
     "@faker-js/faker": "^10.6.0",
@@ -32,6 +36,7 @@
     "fastify": "^5.12.3",
     "fastify-plugin": "^6.0.0",
     "fastify-type-provider-zod": "^7.0.0",
+    "nodemailer": "^10.0.10",
     "pg": "^8.23.0",
     "resend": "^6.28.0",
     "zod": "^4.6.1"
