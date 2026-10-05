@@ -1,21 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import {Toaster} from "sonner"
+import { Toaster } from "sonner";
 import "../globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
-  title: "Vila-Kiaxi",
-  description: "Nosso site de futebol",
+  title: "Vila-Kiaxi admin",
+  description: "admin management",
 };
 
 export default function RootLayout({
@@ -24,10 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="pt"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <>
       <body className="min-h-full">
         {children}
         <Toaster
@@ -36,6 +23,6 @@ export default function RootLayout({
           closeButton
         />
         </body>
-    </html>
+    </>
   );
 }
