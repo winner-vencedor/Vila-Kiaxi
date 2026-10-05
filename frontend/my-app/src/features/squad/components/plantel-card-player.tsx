@@ -1,70 +1,54 @@
 import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { SearchButtomsItems } from './search-buttoms-item';
-import { playersMonckei } from './mockei-plantel';
-import { FootprintsIcon } from 'lucide-react';
+import { PlantelPlayerProps } from '../types/plantel-player';
+import { groupedplayers } from '../utils/group-player';
 
-export default function PlantelCardPlayers() {
+export default function PlantelCardPlayers({}: PlantelPlayerProps) {
   return (
-    <div className="flex flex-col gap-3 mb-16 md:mb-0">
-      {SearchButtomsItems.map((item) => {
-        return (
-          <div key={item.id} className="flex min-w-0 flex-col gap-2">
-            <h3 className="font-mono text-xl text-gray-950">{item.label}</h3>
+    <div className="flex flex-col gap-3   md:mb-0">
+      {Object.entries(groupedplayers).map(([position, group]) => (
+        <div key={position} className='space-y-3'>
+          <h2 className='text-foreground font-mono'>{position}</h2>
 
-            <div className="grid min-w-0 grid-cols-2 justify-center gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-3">
-              {playersMonckei.map((item) => {
-                return (
-                  <Card
-                    key={item.id}
-                    className="min-w-0 max-h-70 p-1 md:p-0 shadow-2xl bg-card border hover:translate-1"
-                  >
-                    <CardContent className="p-3 space-y-2">
-                      <div>
-                        <Image
-                          src={item.photo}
-                          alt=""
-                          priority
-                          className="h-20  w-20 rounded-xl"
-                        />
-                      </div>
+          <div className="grid min-w-0 grid-cols-2 justify-center gap-4 md:grid-cols-3 md:gap-3 lg:grid-cols-4 lg:gap-4">
+            {group.map((item) => {
+              return (
+                <Card
+                  key={item.id}
+                  className="min-w-0 max-h-auto p-1 md:p-0 shadow-accent bg-card border border-border dark:bg-card dark:border-border "
+                >
+                  <CardContent className="relative h-64 overflow-hidden rounded-xl">
+                    <Image
+                      src={item.photo}
+                      alt={item.name}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
 
-                      <CardFooter className="flex flex-col items-start justify-center gap-1 bg-card">
-                        <h1 className="min-w-0 wrap-break-word font-sans text-foreground">
-                          {item.name}
-                        </h1>
-                        <div className="hidden md:flex md:flex-col ">
-                          <div className="flex gap-1">
-                            <p className="from-accent-foreground">Age:</p>
-                            <span className="font-mono text-emerald-600">
-                              {item.age}
-                            </span>
-                          </div>
+                    <div className="absolute inset-0 bg-black/40" />
 
-                          <div className="flex items-center gap-1">
-                            <FootprintsIcon size={12} />
-                            <p className="font-mono">Foot:</p>
-                            <span className="font-mono text-emerald-600">
-                              {item.preferredFoot}
-                            </span>
-                          </div>
+                    <h1 className="absolute bottom-4 left-8 z-10 text-xl font-bold text-white">
+                      {item.name}
+                    </h1>
+                  </CardContent>
 
-                          <div className="flex items-center gap-2">
-                            <p className="font-mono">Position:</p>
-                            <span className="text-emerald-600 font-mono">
-                              {item.Position}
-                            </span>
-                          </div>
-                        </div>
-                      </CardFooter>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+                  <CardFooter className=" flex items-center justify-around bg-card">
+                    <span className="font-mono text-emerald-600">
+                      {item.Position}
+                    </span>
+
+                    <div className="h-4 w-px bg-black" />
+                    <span className="text-emerald-600 font-mono">
+                      {item.preferredFoot}
+                    </span>
+                  </CardFooter>
+                </Card>
+              );
+            })}
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 }
