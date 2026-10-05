@@ -25,7 +25,7 @@ export default function TopPlayersCard({ players }: TopPlayersProps) {
 
         <div>
           <Link
-            href="#"
+            href="/match-history"
             className="flex items-center gap-1 text-xs  text-primary transition-colors hover:text-primary/80"
           >
             <span>Ver todos</span>

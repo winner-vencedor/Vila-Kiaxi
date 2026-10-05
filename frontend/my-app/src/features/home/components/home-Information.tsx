@@ -1,4 +1,6 @@
+"use client"
 
+import {useRouter} from "next/navigation"
 import PlayerOfTheWeekCard from './player-of-the-week-card';
 import NextGameCard from './next-game-card';
 import TopPlayersCard from './top-players-card';
@@ -6,6 +8,8 @@ import TeamStatistics from './team-Statistics';
 import LastGameCard from './last-game-card';
 import {LucideUsers} from "lucide-react"
 import { Button } from '@/components/ui/button';
+import {  lastGame} from '@/data/last-game.data';
+import { nextgame } from '@/data/next-game.data';
 
 const players = [
   {
@@ -36,13 +40,16 @@ const players = [
 
 
 export default function HomeInformation() {
+  const router=useRouter()
   const istrue = true;
 
   return (
-    <div className="flex flex-col gap-5 min-h-screen  w-full pt-21 md:pt-0">
+    <div className=" flex flex-col gap-5 min-h-screen w-full pt-21 md:pt-0">
       {istrue && (
         <div className="flex justify-end w-full">
-          <Button className="bg-primary hover:bg-emerald-600 p-2 rounded-xl font-sans text-xs text-foreground dark:text-background">
+          <Button
+          onClick={()=> router.push("/profile")}
+          className="bg-primary hover:bg-emerald-600 p-2  font-sans text-foreground font-medium dark:text-background">
             <LucideUsers className='w-5 h-5'/>
             Aderir a equipe
           </Button>
@@ -51,7 +58,7 @@ export default function HomeInformation() {
 
       <section className="flex flex-col gap-4 md:grid lg:grid-cols-[3fr_5fr_2fr] lg:flex-1 min-h-0 p-2">
         < PlayerOfTheWeekCard/>
-        <NextGameCard/>
+        <NextGameCard nextgame={nextgame}/>
         <TopPlayersCard players={players}/>
       </section>
 
@@ -61,7 +68,7 @@ export default function HomeInformation() {
       </div>
 
       <div className='flex-1'>
-        <LastGameCard/>
+        <LastGameCard lastGame={lastGame}/>
         </div>
       </section>
     </div>

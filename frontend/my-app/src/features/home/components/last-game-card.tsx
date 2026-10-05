@@ -1,10 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { LastGameProps } from '../types/last-game';
 import { ArrowRight, Trophy, Volleyball } from 'lucide-react';
 import SoccerCleat from '@/assets/shoe-cleat.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function LastGameCard() {
+export default function LastGameCard({ lastGame }: LastGameProps) {
   return (
     <Card className="bg-card min-h-0 min-w-0 overflow-hidden p-2 lg:flex-3 md:flex-5 border border-border dark:bg-card flex-col gap-4  md:flex ">
       <div className="flex justify-between">
@@ -28,13 +29,13 @@ export default function LastGameCard() {
       <CardContent className="flex flex-col gap-3">
         <div className="flex justify-around w-full font-mono text-foreground lg:text-xs md:text-xs gap-3 md:gap-0 bg-emerald-100/40 p-4">
           <strong>
-            <h2>Barcelona</h2>
+            <h2>{lastGame.opponent}</h2>
           </strong>
-          <span className="text-xl font-bold">0</span>
+          <span className="text-xl font-bold">{lastGame.opponentScore}</span>
           <h1 className="text-xl ">VS</h1>
-          <span className="text-xl font-bold">0</span>
+          <span className="text-xl font-bold">{lastGame.ourScore}</span>
           <strong>
-            <h2>Real Madrid</h2>
+            <h2>{lastGame.ourTime}</h2>
           </strong>
         </div>
 
@@ -46,23 +47,14 @@ export default function LastGameCard() {
                 <h6 className="text-foreground">Marcadores</h6>
               </strong>
             </div>
-
-            <div className="flex justify-around ">
-              <p>Winner</p>
-              <span>3</span>
-            </div>
-            <div className="flex justify-around">
-              <p>piter</p>
-              <span>3</span>
-            </div>
-            <div className="flex justify-around">
-              <p>rosario</p>
-              <span>3</span>
-            </div>
-            <div className="flex justify-around">
-              <p>benilson</p>
-              <span>3</span>
-            </div>
+            <ol>
+              {lastGame.marcadores.map((item) => (
+                <li key={item.id} className="flex justify-between">
+                  <p>{item.name}</p>
+                  <span>{item.goal}</span>
+                </li>
+              ))}
+            </ol>
           </div>
           <hr />
 
@@ -77,14 +69,14 @@ export default function LastGameCard() {
                 <h6 className="text-foreground">Assitencia</h6>
               </strong>
             </div>
-            <div className="flex justify-around">
-              <p>Winner</p>
-              <span>1</span>
-            </div>
-            <div className="flex justify-around">
-              <p>piter</p>
-              <span>2</span>
-            </div>
+            <ol>
+              {lastGame.assistentes.map((item) => (
+                <li key={item.id} className="flex justify-between">
+                  <p>{item.name}</p>
+                  <span>{item.assistencia}</span>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </CardContent>
