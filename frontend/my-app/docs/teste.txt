@@ -1,0 +1,1979 @@
+Análise do projeto e dúvidas sobre forgot-password, edit-profile e fluxo de recuperação de senha
+
+1) Sobre o projeto em geral
+
+Fiz a verificação direta do projeto com o Next.js e o resultado foi:
+- pnpm run lint -> sem erros
+- pnpm exec next build -> compilou com sucesso
+- output do build confirmou: "Compiled successfully" e "Finished TypeScript"
+
+Ou seja, o projeto não está quebrado em compilação, mas tem vários pontos problemáticos de qualidade, lógica e arquitetura.
+
+Principais problemas reais:
+- Bottom sheet sem funcionalidade real
+- Formulário de perfil visual, mas não funcional
+- Nomeação inconsistentes (ex.: openButtomSheet, setexpanded)
+- Mistura de design system e imports inconsistentes
+- Componentes criados em estado de protótipo e não finalizados
+
+2) Análise da rota forgot-password
+
+As rotas já existem e estão corretamente estruturadas no App Router do Next.js:
+- /forgot-password
+- /forgot-password/reset-password
+
+Estrutura:
+- src/app/(auth)/forgot-password/page.tsx
+- src/app/(auth)/forgot-password/reset-password/page.tsx
+
+Isso está correto porque o route group (auth) não aparece na URL; ele serve apenas para organizar as rotas.
+
+O problema não é a rota em si, e sim a lógica dentro dela.
+
+No código atual, o fluxo da recuperação está simulado:
+- no forgot-password, o email é comparado a uma string fixa
+- se bater, o sistema navega para a página de reset
+- no reset password, só compara a senha e confirmação
+- depois redireciona para /login
+
+Isso não é um sistema real de recuperação de senha.
+
+3) Como normalmente funciona o forgot password
+
+O fluxo real é:
+1. Usuário coloca o email
+2. Frontend valida o email
+3. Backend verifica se o email existe
+4. Backend gera um token seguro
+5. Backend salva o token e sua expiração
+6. Backend envia um link para o email
+7. Usuário clica no link
+8. Página de reset lê o token da URL
+9. Usuário define nova senha
+10. Backend valida o token e atualiza a senha
+11. Redireciona para login
+
+4) Explicação do email + token
+
+Esse é o modelo comum para recuperação de senha.
+
+Email = identificação do usuário
+Token = prova de que a pessoa tem acesso ao email
+
+Sem o token, um atacante que só saiba o email não consegue trocar a senha.
+
+Fluxo com email + token:
+- Usuário pede recuperação
+- Backend procura usuário pelo email
+- Gera token aleatório
+- Salva token + expiração
+- Envia link: /forgot-password/reset-password?token=abc123
+- Usuário acede ao link
+- Backend valida token
+- Usuário define nova senha
+- Backend atualiza senha e invalida o token
+
+Isso é a segunda camada de segurança e o que normalmente é usado por sistemas como Google/Facebook.
+
+5) Análise do edit-profile
+
+O formulário em:
+- src/features/settings/components/profile/edit-profile.tsx
+
+está visualmente bem montado, mas não funciona como um formulário real.
+
+Está incompleto porque:
+- não usa useState
+- não usa useForm
+- não tem onSubmit
+- não tem botão submit
+- não tem validação
+- não tem integração com backend
+
+Ou seja, ele é um mock visual, não um formulário funcional de edição de perfil.
+
+6) Como normalmente a página de perfil deve funcionar
+
+A lógica correta é:
+1. Buscar os dados do usuário no backend
+2. Preencher o formulário com esses dados
+3. Usuário alterar campos
+4. Submeter o formulário
+5. Backend guardar os dados atualizados
+
+Em React + react-hook-form:
+- useForm cria o estado do formulário
+- register liga cada input ao form
+- handleSubmit valida e envia
+- reset(...) preenche os dados vindos do backend
+
+Exemplo de lógica:
+
+useEffect(() => {
+  async function loadUser() {
+    const response = await fetch('/api/user/me');
+    const user = await response.json();
+
+    reset({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      gender: user.gender,
+    });
+  }
+
+  loadUser();
+}, [reset]);
+
+E o submit seria algo como:
+
+async function onSubmit(data) {
+  await fetch('/api/user/me', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+7) Sobre o onChange com hook form
+
+Quando se usa react-hook-form, normalmente não se faz onChange manualmente para cada input.
+
+Em vez disso, usa-se:
+
+<input {...register('name')} />
+<input {...register('email')} />
+<select {...register('gender')} />
+
+O register já faz:
+- atualizar o valor do campo
+- guardar no estado do form
+- entregar os valores no submit
+
+8) Conclusão
+
+A estrutura de rotas forgot-password está correta.
+
+Mas a lógica atual do fluxo é uma simulação, não uma recuperação real.
+
+O formulário de edição de perfil também está visual, mas não funcional.
+
+Os pontos mais importantes para corrigir são:
+- usares o hook form corretamente
+- usares token para recuperação de senha
+- validares e enviares os dados ao backend
+- não dependeres de ifs manuais com email fixo
+
+9) Resumo em uma frase
+
+O teu projeto compila, mas ainda está em fase de protótipo: várias telas estão visuais, porém ainda faltam a lógica real de autenticação, recuperação e atualização de dados.
+
+10) Como o edit-profile deve funcionar com o banco de dados (passo a passo)
+
+A página de perfil deve funcionar assim:
+
+Passo 1: buscar os dados do usuário autenticado
+- Quando a página abre, o frontend faz um pedido ao backend para obter os dados do utilizador logado.
+- Normalmente a rota é algo como: GET /api/user/me
+- O backend usa o token da sessão para identificar quem está autenticado.
+
+Exemplo:
+
+fetch('/api/user/me', {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+})
+
+O backend responde:
+
+{
+  "id": 1,
+  "name": "Ilda Nhanga",
+  "email": "ilda@gmail.com",
+  "phone": "923456789",
+  "gender": "Feminino"
+}
+
+Passo 2: preencher o formulário com os dados do utilizador
+- O frontend recebe o objeto do utilizador.
+- Usa o reset() do react-hook-form para preencher os inputs.
+
+Exemplo:
+
+reset({
+  name: user.name,
+  email: user.email,
+  phone: user.phone,
+  gender: user.gender
+})
+
+Assim os inputs passam a mostrar exatamente o que está guardado no banco.
+
+Passo 3: o utilizador altera os campos
+- Cada input fica ligado ao react-hook-form com register.
+- Quando o utilizador digita ou altera um campo, o hook guarda o valor automaticamente.
+
+Exemplo:
+
+<input {...register('name')} />
+<input {...register('email')} />
+<input {...register('phone')} />
+<select {...register('gender')} />
+
+No onChange não é preciso fazer manualmente, porque o register já trata isso.
+
+Passo 4: validar os dados antes de enviar
+- Antes de gravar, a aplicação valida:
+- nome obrigatório
+- email válido
+- telefone com tamanho mínimo
+- género obrigatório
+
+Isso normalmente é feito com Zod e zodResolver.
+
+Exemplo de schema:
+
+const EditProfileSchema = z.object({
+  name: z.string().min(2, 'Nome obrigatório'),
+  email: z.string().email('Email inválido'),
+  phone: z.string().min(9, 'Telefone inválido'),
+  gender: z.enum(['Masculino', 'Feminino'])
+});
+
+Passo 5: enviar os dados para o backend
+- Quando o utilizador clicar em Guardar, o frontend chama a API de atualização.
+- Normalmente usa PUT ou PATCH.
+
+Exemplo:
+
+fetch('/api/user/me', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  },
+  body: JSON.stringify(data)
+})
+
+Passo 6: o backend atualiza o usuário
+- O backend recebe os dados do formulário.
+- Valida novamente.
+- Busca o utilizador logado pelo token.
+- Atualiza os campos no banco.
+
+Exemplo de lógica no backend:
+
+const user = await prisma.user.update({
+  where: { id: userId },
+  data: {
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    gender: data.gender,
+  }
+});
+
+Passo 7: responder sucesso ao frontend
+- O backend responde com sucesso ou erro.
+- O frontend mostra mensagem de confirmação.
+
+Exemplo:
+
+if (!response.ok) {
+  alert('Erro ao atualizar perfil');
+  return;
+}
+
+alert('Perfil atualizado com sucesso');
+
+Passo 8: recarregar ou atualizar a UI
+- Depois da atualização, o frontend pode:
+- mostrar uma mensagem de sucesso
+- atualizar o estado local
+- ou recarregar os dados do utilizador
+
+O importante é que a UI reflita o novo valor guardado no banco.
+
+11) O que falta no teu edit-profile hoje
+
+No teu componente atual, falta exatamente esta cadeia:
+- buscar dados do backend
+- usar useForm
+- usar reset() para preencher
+- registrar os inputs
+- usar handleSubmit
+- validar com schema
+- chamar API de update
+- atualizar no banco
+
+12) Regra de ouro
+
+O formulário não deve apenas existir visualmente. Ele deve:
+- ler dados do utilizador
+- permitir edição
+- validar
+- enviar para o backend
+- salvar no banco
+- mostrar feedback ao usuário
+
+13) Fluxo final correcto do edit-profile
+
+Frontend:
+- fetch /api/user/me
+- reset(form, userData)
+- user altera campos
+- handleSubmit -> valida
+- fetch /api/user/me PUT/PATCH
+- mostra sucesso
+
+Backend:
+- autentica o utilizador
+- encontra o registo do user
+- atualiza os campos
+- devolve sucesso
+
+Banco:
+- guarda name, email, phone, gender
+
+14) Conclusão
+
+A página de perfil funciona quando ela faz a ponte correta entre:
+- UI (formulário)
+- Frontend (fetch + react-hook-form)
+- Backend (rota de atualização)
+- Banco de dados (save/update)
+
+Sem essa cadeia, o edit-profile é apenas um mock visual e não atualiza o utilizador de verdade.
+
+15) Aula: relations no Drizzle ORM
+
+Uma relation descreve como duas tabelas se ligam. Exemplo:
+- um utilizador pode fazer muitos pedidos de inscrição;
+- cada pedido pertence a um único utilizador.
+
+users (1) ---------------- (N) membership_requests
+
+Como descobrir onde criar uma relation:
+- "Este registo pertence a quem?" indica uma relation one.
+- "Este registo pode ter vários filhos?" indica uma relation many.
+- A tabela pai possui uma primary key.
+- A tabela filha guarda a foreign key.
+
+Não cries uma relation apenas porque duas tabelas têm campos parecidos. Cria-a
+quando existe uma regra real de pertencimento ou associação.
+
+Primeiro, cria a foreign key na tabela do lado many:
+
+import { integer, pgTable, serial, text } from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+});
+
+export const membershipRequests = pgTable('membership_requests', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  status: text('status').notNull(),
+});
+
+O references() cria a foreign key real no banco. Sem ele, userId é apenas um
+número e o banco não garante que o utilizador exista.
+
+Depois, declara as relations do Drizzle:
+
+import { relations } from 'drizzle-orm';
+
+export const usersRelations = relations(users, ({ many }) => ({
+  membershipRequests: many(membershipRequests),
+}));
+
+export const membershipRequestsRelations = relations(
+  membershipRequests,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [membershipRequests.userId],
+      references: [users.id],
+    }),
+  }),
+);
+
+Diferença importante:
+- references() cria a ligação no banco;
+- relations() ensina o Drizzle a navegar entre os dados;
+- normalmente precisas dos dois.
+
+Tipos principais:
+
+one:
+Um pedido pertence a um utilizador:
+
+user: one(users, {
+  fields: [membershipRequests.userId],
+  references: [users.id],
+})
+
+many:
+Um utilizador possui muitos pedidos:
+
+membershipRequests: many(membershipRequests)
+
+many-to-many:
+Quando muitos utilizadores podem participar em muitos jogos, cria uma tabela
+intermediária:
+
+users -------- match_players -------- matches
+
+match_players guarda userId e matchId. Cada coluna possui uma foreign key.
+
+Para consultar dados relacionados, usa with:
+
+const result = await db.query.users.findMany({
+  with: {
+    membershipRequests: true,
+  },
+});
+
+Para consultar o pedido e o seu utilizador:
+
+const result = await db.query.membershipRequests.findMany({
+  with: {
+    user: true,
+  },
+});
+
+Usa with para carregar relações de forma simples. Usa innerJoin ou leftJoin
+quando precisares de filtros, agregações ou uma consulta SQL mais específica.
+
+const result = await db
+  .select()
+  .from(membershipRequests)
+  .innerJoin(users, eq(membershipRequests.userId, users.id));
+
+Depois de alterar as tabelas:
+1) altera o schema;
+2) gera a migration;
+3) aplica a migration no banco;
+4) testa insert, update e select com with.
+
+Com drizzle-kit, os comandos costumam ser:
+
+pnpm drizzle-kit generate
+pnpm drizzle-kit migrate
+
+Erros comuns:
+- criar relations sem foreign key;
+- inverter fields e references;
+- esquecer a relation inversa;
+- usar many quando a regra é one;
+- guardar vários ids numa string em vez de criar tabela intermediária;
+- alterar o schema sem gerar ou aplicar migration;
+- consultar db.query sem configurar o schema no db.
+
+Regra para fields e references:
+- fields é a coluna da tabela atual que guarda o id relacionado;
+- references é a coluna primary key ou unique da tabela referenciada.
+
+Método prático:
+a) desenha as tabelas e pergunta quem pertence a quem;
+b) define a primary key de cada tabela;
+c) coloca a foreign key no lado many;
+d) adiciona references();
+e) adiciona relations() nos dois lados;
+f) gera e aplica a migration;
+g) testa a leitura com with e a escrita com insert.
+
+16) Plano de estudo para entrevistas de frontend
+
+O objetivo não é decorar respostas. É conseguir explicar decisões e mostrar
+que sabes investigar e resolver problemas.
+
+JavaScript:
+- let, const, tipos primitivos e objetos;
+- funções normais e arrow functions;
+- destructuring e spread operator;
+- map, filter, find e reduce;
+- promises, async/await e try/catch;
+- fetch, JSON e tratamento de erros;
+- diferença entre == e ===;
+- escopo, closures e imutabilidade.
+
+Exercícios:
+- criar uma lista de jogadores;
+- filtrar por posição;
+- ordenar por nome;
+- buscar um jogador pelo id;
+- calcular estatísticas com reduce;
+- carregar dados simulados com uma Promise.
+
+React:
+- componentes, props e children;
+- useState e useEffect;
+- renderização condicional;
+- listas e a propriedade key;
+- formulários controlados;
+- lifting state up;
+- Context API;
+- componentes reutilizáveis;
+- estados de loading, erro e vazio.
+
+Exercícios no teu projeto:
+- transformar um card de jogador em componente reutilizável;
+- passar os dados do jogador por props;
+- criar um filtro de jogadores;
+- abrir e fechar um modal com estado;
+- mostrar uma mensagem quando não existirem resultados;
+- criar um componente de loading.
+
+TypeScript:
+- tipos e interfaces;
+- union types;
+- propriedades opcionais;
+- tipagem de props;
+- tipagem de eventos React;
+- generics;
+- diferença entre type e interface;
+- inferência de tipos;
+- z.infer com Zod.
+
+Exercícios:
+- criar o tipo Player;
+- tipar uma lista de jogadores;
+- tipar as props de um PlayerCard;
+- tipar o evento de submit de um formulário;
+- criar um tipo para os estados loading, success e error.
+
+Formulários e validação:
+- register e handleSubmit do React Hook Form;
+- formState.errors;
+- defaultValues e reset;
+- validação com Zod;
+- optional, nullable e nullish;
+- mensagens de erro;
+- upload de File e FileList;
+- estados de envio e sucesso.
+
+Exercício recomendado:
+- validar o EditProfile;
+- mostrar todos os erros junto dos campos;
+- impedir submit inválido;
+- enviar um objeto simulado para uma função;
+- mostrar loading durante o envio;
+- mostrar uma mensagem de sucesso.
+
+Next.js:
+- App Router;
+- pages e layouts;
+- route groups;
+- Server Components e Client Components;
+- useRouter;
+- rotas dinâmicas;
+- loading.tsx e not-found.tsx;
+- metadata;
+- carregamento de dados.
+
+Pergunta essencial:
+"Por que este componente precisa de 'use client'?"
+
+Resposta esperada:
+Porque usa funcionalidades do navegador ou hooks como useState, useEffect,
+eventos de click e formulários interativos.
+
+CSS e responsividade:
+- Flexbox e Grid;
+- mobile-first;
+- breakpoints;
+- position fixed e absolute;
+- overflow e scroll;
+- hover, focus e disabled;
+- contraste e acessibilidade;
+- layouts que funcionam em telas pequenas.
+
+Exercício:
+- testar cada página em mobile e desktop;
+- verificar se nenhum texto sai do seu elemento;
+- navegar apenas pelo teclado;
+- confirmar se os botões têm estados de focus;
+- usar labels associados aos inputs.
+
+APIs e backend básico:
+- GET, POST, PUT, PATCH e DELETE;
+- status 200, 201, 400, 401, 403, 404 e 500;
+- headers e JSON;
+- fetch;
+- loading e erros de rede;
+- autenticação, sessão e token;
+- validação no frontend e no backend;
+- FormData para upload de imagem.
+
+Exercício:
+- criar uma rota PATCH para atualizar o perfil;
+- enviar name, email, phone e gender;
+- enviar a imagem usando FormData;
+- tratar respostas de sucesso e erro;
+- atualizar a tela depois da resposta.
+
+Banco de dados e Drizzle:
+- tabelas e colunas;
+- primary key;
+- foreign key;
+- one-to-one, one-to-many e many-to-many;
+- relations e joins;
+- inserts, updates e selects;
+- migrations;
+- índices e campos únicos.
+
+Exercício:
+- criar users;
+- criar matches;
+- criar uma tabela intermediária match_players;
+- relacionar users e matches;
+- consultar um jogo com os seus jogadores.
+
+Git e trabalho profissional:
+- git status;
+- branches;
+- commits pequenos;
+- pull e push;
+- pull request;
+- resolver conflitos;
+- ler um diff antes de enviar alterações.
+
+Qualidade:
+- TypeScript para encontrar erros cedo;
+- ESLint para manter consistência;
+- testes unitários para regras isoladas;
+- testes de componentes para interação;
+- testes de integração para fluxos completos;
+- revisão no navegador;
+- tratamento de estados de loading, erro e vazio.
+
+17) Perguntas frequentes de entrevista
+
+Por que escolheste Next.js?
+Resposta possível: escolhi Next.js porque ele fornece uma estrutura para React
+com routing, layouts, otimização e possibilidade de usar server-side rendering.
+
+Por que usaste React Hook Form?
+Resposta possível: para controlar formulários com menos código e integrar a
+validação do Zod através do resolver.
+
+Para que serve o Zod?
+Resposta possível: define um schema executável que valida os dados em runtime
+e também permite gerar tipos TypeScript com z.infer.
+
+Qual a diferença entre optional e nullable?
+optional aceita undefined ou campo ausente. nullable aceita null. Nenhum dos
+dois aceita automaticamente uma string vazia quando há outras validações.
+
+Como protegerias uma rota?
+Usaria autenticação no backend, verificaria a sessão antes de responder e
+aplicaria autorização para confirmar o papel do utilizador.
+
+Como tratarias uma falha da API?
+Mostraria um estado de erro, manteria os dados preenchidos, permitiria tentar
+novamente e registaria detalhes técnicos apenas no local apropriado.
+
+Como relacionarias utilizadores e partidas?
+Se um utilizador puder participar em várias partidas e uma partida tiver vários
+utilizadores, criaria users, matches e uma tabela intermediária match_players.
+
+O que farias se um componente ficasse grande?
+Separaria partes reutilizáveis, moveria regras para hooks ou funções próprias e
+manteria o componente responsável apenas pela composição da interface.
+
+Como testarias o EditProfile?
+Testaria renderização, preenchimento, validação de email, seleção de género,
+upload válido, upload inválido, submit válido, erro da API e cancelamento.
+
+18) Como apresentar este projeto na entrevista
+
+Estrutura de resposta:
+1) explica o problema que a aplicação resolve;
+2) mostra as funcionalidades que desenhaste;
+3) apresenta as tecnologias escolhidas;
+4) explica uma decisão técnica;
+5) conta um problema que encontraste e resolveste;
+6) diz claramente o que ainda está planeado.
+
+Exemplo:
+"Este é o meu primeiro projeto desenvolvido sozinho. Criei um protótipo de
+uma aplicação para gestão de uma equipa de futebol, usando Next.js, React,
+TypeScript e Tailwind. Organizei o código por funcionalidades e usei React
+Hook Form com Zod para os formulários. Durante o desenvolvimento resolvi
+problemas de integração entre FileList e File e testei os fluxos no navegador.
+A próxima etapa é ligar a autenticação, a API e a persistência no banco."
+
+19) Plano prático de 30 dias
+
+Semana 1:
+- rever JavaScript;
+- criar filtros e ordenação de jogadores;
+- praticar promises e fetch.
+
+Semana 2:
+- rever React e TypeScript;
+- refatorar um card do projeto;
+- criar loading, erro e estado vazio.
+
+Semana 3:
+- terminar validação do EditProfile;
+- criar uma API de teste;
+- implementar um PATCH de perfil;
+- praticar FormData e upload.
+
+Semana 4:
+- estudar Drizzle e relations;
+- criar users, matches e match_players;
+- escrever alguns testes;
+- simular entrevistas explicando o projeto em voz alta.
+
+Regra final:
+Estuda um conceito, implementa-o no teu projeto, explica-o com palavras simples
+e testa o resultado. Se conseguires fazer estas quatro coisas, o conhecimento
+começa a tornar-se confiança.
+
+20) Lista ampliada de temas apenas de frontend
+
+HTML e acessibilidade:
+- estrutura de um documento HTML;
+- HTML semântico: header, nav, main, section, article e footer;
+- labels associados a inputs;
+- hierarquia correta de headings;
+- atributos alt em imagens;
+- aria-label, aria-expanded e aria-hidden;
+- navegação por teclado;
+- foco visível;
+- contraste de cores;
+- mensagens de erro acessíveis;
+- leitores de ecrã;
+- formulários acessíveis;
+- botões versus links;
+- estados disabled e loading;
+- acessibilidade em modais e menus.
+
+CSS:
+- cascade, herança e especificidade;
+- box model;
+- display block, inline, flex e grid;
+- Flexbox: direção, alinhamento e espaçamento;
+- Grid: colunas, linhas e áreas;
+- position relative, absolute, fixed e sticky;
+- z-index e stacking context;
+- width, max-width, min-width e overflow;
+- unidades rem, em, %, vh e vw;
+- variáveis CSS;
+- pseudo-classes hover, focus e active;
+- pseudo-elementos;
+- transitions e animations;
+- media queries;
+- container queries;
+- CSS modular e organização de estilos.
+
+Responsividade:
+- pensar primeiro no layout mobile;
+- usar breakpoints baseados no conteúdo;
+- criar layouts fluidos;
+- evitar larguras fixas desnecessárias;
+- testar orientação portrait e landscape;
+- adaptar sidebar para bottom navigation;
+- verificar overflow horizontal;
+- testar textos longos;
+- testar zoom do navegador;
+- testar diferentes tamanhos de ecrã.
+
+JavaScript para frontend:
+- tipos de dados;
+- coerção de tipos;
+- truthy e falsy;
+- escopo e closures;
+- funções de ordem superior;
+- map, filter, find, some, every e reduce;
+- destructuring;
+- spread e rest;
+- módulos import e export;
+- event loop;
+- promises;
+- async e await;
+- try e catch;
+- debounce e throttle;
+- manipulação de datas;
+- localStorage e sessionStorage;
+- URLSearchParams;
+- FormData;
+- tratamento de erros.
+
+DOM e browser:
+- eventos de click, input, change e submit;
+- bubbling e capturing;
+- preventDefault e stopPropagation;
+- event delegation;
+- querySelector;
+- formulários nativos;
+- File e FileList;
+- drag and drop;
+- IntersectionObserver;
+- ResizeObserver;
+- Clipboard API;
+- History API;
+- cookies;
+- viewport e responsividade;
+- DevTools: Elements, Console, Network e Application.
+
+React fundamentos:
+- JSX;
+- componentes funcionais;
+- props;
+- children;
+- composição de componentes;
+- renderização condicional;
+- listas e keys;
+- estado local;
+- lifting state up;
+- controlled e uncontrolled components;
+- useState;
+- useEffect;
+- useRef;
+- useContext;
+- custom hooks;
+- Error Boundaries;
+- Strict Mode;
+- ciclo de vida através de efeitos;
+- imutabilidade;
+- estado derivado.
+
+React avançado:
+- reduzir renders desnecessários;
+- separar estado local e global;
+- startTransition;
+- useDeferredValue;
+- Suspense;
+- lazy loading;
+- code splitting;
+- optimistic UI;
+- gestão de formulários complexos;
+- composição versus herança;
+- render props;
+- compound components;
+- portais;
+- focus management;
+- cleanup de efeitos;
+- cancelamento de requests;
+- evitar stale closures.
+
+TypeScript no frontend:
+- tipos primitivos;
+- interfaces;
+- type aliases;
+- union e intersection types;
+- literal types;
+- optional properties;
+- readonly;
+- enums e alternativas com unions;
+- generics;
+- utility types;
+- Partial, Pick, Omit e Record;
+- unknown versus any;
+- never;
+- narrowing;
+- type guards;
+- tipagem de eventos React;
+- tipagem de refs;
+- tipagem de children;
+- tipagem de respostas da API;
+- inferência com Zod.
+
+React Hook Form e Zod:
+- register;
+- handleSubmit;
+- formState;
+- errors;
+- defaultValues;
+- reset;
+- setValue;
+- watch;
+- Controller;
+- validação síncrona;
+- validação assíncrona;
+- schemas reutilizáveis;
+- preprocess;
+- transform;
+- optional, nullable e nullish;
+- union e enum;
+- validação de File;
+- mensagens por campo;
+- submit válido e inválido.
+
+Next.js frontend:
+- App Router;
+- layouts aninhados;
+- route groups;
+- páginas estáticas;
+- rotas dinâmicas;
+- searchParams;
+- loading UI;
+- error UI;
+- not-found;
+- metadata;
+- Image;
+- Link;
+- useRouter;
+- usePathname;
+- useSearchParams;
+- Server Components;
+- Client Components;
+- streaming;
+- caching;
+- revalidation;
+- middleware;
+- tratamento de navegação.
+
+Consumo de APIs:
+- fetch;
+- headers;
+- JSON;
+- FormData;
+- GET, POST, PUT, PATCH e DELETE;
+- status codes;
+- timeout;
+- retry;
+- loading state;
+- error state;
+- empty state;
+- cancelamento com AbortController;
+- validação da resposta;
+- paginação;
+- filtros;
+- ordenação;
+- pesquisa;
+- cache no cliente;
+- atualização otimista.
+
+Estado da interface:
+- estado de modal aberto;
+- estado de menu aberto;
+- estado de formulário;
+- estado de carregamento;
+- estado de erro;
+- estado vazio;
+- estado de sucesso;
+- estado de sessão;
+- estado de filtros;
+- estado sincronizado com URL;
+- Context API;
+- quando não usar estado global;
+- Zustand, Redux ou outra biblioteca, quando necessário;
+- evitar duplicar a mesma fonte de verdade.
+
+Componentes e arquitetura:
+- componentes de apresentação;
+- componentes de lógica;
+- componentes reutilizáveis;
+- hooks específicos;
+- helpers puros;
+- tipos partilhados;
+- design tokens;
+- variantes de componentes;
+- composição;
+- convenções de nomes;
+- organização por feature;
+- separar UI de regras de negócio;
+- evitar componentes gigantes;
+- evitar prop drilling excessivo;
+- definir APIs claras para componentes.
+
+UI e UX:
+- hierarquia visual;
+- espaçamento consistente;
+- tipografia;
+- paleta de cores;
+- feedback após ações;
+- confirmação de ações destrutivas;
+- mensagens claras;
+- prevenção de erros;
+- skeleton loading;
+- empty states;
+- modais;
+- dropdowns;
+- tabs;
+- tooltips;
+- toasts;
+- paginação;
+- filtros;
+- pesquisa;
+- responsividade;
+- consistência entre telas.
+
+Performance:
+- medir antes de otimizar;
+- bundle size;
+- lazy loading de imagens;
+- otimização de imagens;
+- code splitting;
+- evitar requests duplicados;
+- virtualização de listas;
+- memoização apenas quando necessária;
+- renders desnecessários;
+- React DevTools Profiler;
+- Lighthouse;
+- Core Web Vitals;
+- preload e prefetch;
+- cache;
+- reduzir JavaScript enviado ao cliente.
+
+Segurança no frontend:
+- não guardar passwords;
+- não expor secrets no cliente;
+- cuidado com XSS;
+- escapar conteúdo do utilizador;
+- evitar dangerouslySetInnerHTML;
+- validar dados recebidos;
+- não confiar apenas na validação do frontend;
+- proteger tokens;
+- compreender cookies HttpOnly;
+- compreender CORS;
+- validar uploads;
+- limitar tamanho de ficheiros;
+- não colocar dados sensíveis em URLs;
+- tratar erros sem expor informação interna.
+
+Testes frontend:
+- testes unitários;
+- testes de componentes;
+- testes de integração;
+- testes end-to-end;
+- React Testing Library;
+- Playwright;
+- testar comportamento, não implementação;
+- testar submit válido;
+- testar submit inválido;
+- testar loading;
+- testar erro;
+- testar cancelamento;
+- testar navegação;
+- testar acessibilidade;
+- testar diferentes viewports.
+
+Ferramentas profissionais:
+- VS Code;
+- DevTools;
+- Git;
+- ESLint;
+- Prettier;
+- TypeScript compiler;
+- npm ou pnpm;
+- variáveis de ambiente;
+- pull requests;
+- code review;
+- documentação;
+- README;
+- debugging sistemático;
+- leitura de logs;
+- análise de network requests.
+
+21) Projetos frontend para praticar
+
+Projeto 1: formulário de cadastro
+- campos com validação;
+- mensagens de erro;
+- password visível ou escondida;
+- estado de loading;
+- sucesso e falha.
+
+Projeto 2: edição de perfil
+- carregar valores iniciais;
+- editar dados;
+- validar com Zod;
+- fazer upload de imagem;
+- mostrar preview;
+- cancelar alterações;
+- guardar alterações.
+
+Projeto 3: lista de jogadores
+- cards reutilizáveis;
+- pesquisa;
+- filtros;
+- ordenação;
+- paginação;
+- estado vazio;
+- loading skeleton.
+
+Projeto 4: dashboard responsivo
+- sidebar desktop;
+- bottom navigation mobile;
+- header;
+- cards de estatísticas;
+- tabelas responsivas;
+- tema claro e escuro.
+
+Projeto 5: fluxo de autenticação visual
+- login;
+- cadastro;
+- forgot password;
+- reset password;
+- rotas públicas;
+- estado de utilizador autenticado;
+- logout visual.
+
+Projeto 6: testes do EditProfile
+- renderizar o formulário;
+- preencher os campos;
+- escolher género;
+- selecionar imagem;
+- submeter dados válidos;
+- mostrar erros inválidos;
+- cancelar o formulário;
+- confirmar que o callback foi chamado.
+
+22) Roteiro de estudo frontend
+
+Nível 1 - fundamentos:
+- HTML;
+- CSS;
+- JavaScript;
+- DOM;
+- responsividade;
+- Git.
+
+Nível 2 - React:
+- JSX;
+- props;
+- estado;
+- hooks;
+- formulários;
+- componentes reutilizáveis;
+- TypeScript.
+
+Nível 3 - aplicações reais:
+- Next.js;
+- APIs;
+- autenticação visual;
+- loading e erros;
+- upload;
+- acessibilidade;
+- testes.
+
+Nível 4 - qualidade:
+- performance;
+- segurança;
+- arquitetura;
+- debugging;
+- code review;
+- deploy.
+
+Para cada assunto, segue este ciclo:
+1) aprende o conceito;
+2) cria um exemplo pequeno;
+3) aplica-o no projeto Vila-Kiaxi;
+4) testa no navegador;
+5) explica o que fizeste em voz alta;
+6) anota o que ainda não compreendeste.
+
+23) Lista de temas de backend
+
+Fundamentos da web:
+- cliente e servidor;
+- request e response;
+- HTTP e HTTPS;
+- métodos GET, POST, PUT, PATCH e DELETE;
+- headers;
+- body;
+- query parameters;
+- route parameters;
+- cookies;
+- sessões;
+- JSON;
+- códigos de status;
+- idempotência;
+- CORS;
+- ciclo completo de uma requisição.
+
+Node.js:
+- runtime do JavaScript no servidor;
+- módulos;
+- npm e pnpm;
+- package.json;
+- variáveis de ambiente;
+- process.env;
+- filesystem;
+- streams;
+- eventos;
+- tratamento de erros;
+- async/await no servidor;
+- logging;
+- graceful shutdown.
+
+Frameworks backend:
+- criação de rotas;
+- controllers;
+- services;
+- middlewares;
+- validação de body;
+- tratamento centralizado de erros;
+- responses consistentes;
+- organização por módulos;
+- health checks;
+- documentação da API;
+- versionamento de endpoints.
+
+APIs REST:
+- definir recursos;
+- escolher nomes de endpoints;
+- separar responsabilidades;
+- validar parâmetros;
+- paginação;
+- filtros;
+- ordenação;
+- pesquisa;
+- respostas de erro;
+- status 201 para criação;
+- status 204 quando não há conteúdo;
+- evitar devolver dados sensíveis;
+- versionar mudanças incompatíveis.
+
+Exemplo de endpoints para o Vila-Kiaxi:
+- POST /auth/register;
+- POST /auth/login;
+- POST /auth/forgot-password;
+- POST /auth/reset-password;
+- POST /auth/logout;
+- GET /users/me;
+- PATCH /users/me;
+- GET /matches;
+- POST /matches;
+- GET /matches/:id;
+- POST /matches/:id/players;
+- DELETE /matches/:id/players/:userId.
+
+Autenticação:
+- diferença entre autenticação e autorização;
+- password hashing;
+- bcrypt ou Argon2;
+- nunca guardar passwords em texto puro;
+- sessões no servidor;
+- access tokens;
+- refresh tokens;
+- cookies HttpOnly;
+- Secure e SameSite;
+- expiração de sessão;
+- logout;
+- recuperação de conta;
+- rotação de tokens;
+- revogação de sessões.
+
+Autorização:
+- utilizador autenticado;
+- roles;
+- permissões;
+- acesso do próprio recurso;
+- diferença entre 401 e 403;
+- proteger rotas administrativas;
+- verificar ownership;
+- não confiar no id enviado pelo cliente;
+- aplicar autorização também no backend.
+
+Banco de dados:
+- tabelas;
+- colunas;
+- tipos de dados;
+- primary keys;
+- foreign keys;
+- constraints;
+- unique;
+- not null;
+- default values;
+- índices;
+- normalização;
+- transações;
+- concorrência;
+- integridade referencial;
+- soft delete;
+- timestamps.
+
+SQL:
+- SELECT;
+- INSERT;
+- UPDATE;
+- DELETE;
+- WHERE;
+- ORDER BY;
+- GROUP BY;
+- HAVING;
+- LIMIT e OFFSET;
+- INNER JOIN;
+- LEFT JOIN;
+- COUNT e outras agregações;
+- subqueries;
+- transações;
+- explain e análise de queries.
+
+Drizzle ORM:
+- pgTable;
+- tabelas e colunas;
+- serial e uuid;
+- text, integer, boolean e timestamp;
+- primaryKey;
+- foreignKey;
+- references;
+- relations;
+- one e many;
+- many-to-many com tabela intermediária;
+- eq, and, or e inArray;
+- select;
+- insert;
+- update;
+- delete;
+- returning;
+- with;
+- joins;
+- migrations;
+- schema centralizado;
+- transações com db.transaction.
+
+Exercício com o teu projeto:
+- criar users;
+- criar matches;
+- criar match_players;
+- criar membership_requests;
+- relacionar users e matches;
+- criar uma rota para listar partidas;
+- incluir os jogadores de cada partida;
+- validar o userId no backend;
+- impedir inscrições duplicadas;
+- testar o resultado com dados reais.
+
+Validação e erros:
+- validar sempre no backend;
+- não confiar apenas no frontend;
+- validar tipos;
+- validar campos obrigatórios;
+- validar formatos;
+- validar limites;
+- validar relações existentes;
+- validar permissões;
+- retornar erros previsíveis;
+- não expor stack traces em produção;
+- criar um formato padrão de erro.
+
+Formato de erro recomendado:
+
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Dados inválidos",
+    "fields": {
+      "email": "Email inválido"
+    }
+  }
+}
+
+Uploads:
+- multipart/form-data;
+- FormData;
+- limite de tamanho;
+- validar MIME type;
+- validar extensão;
+- gerar nomes únicos;
+- não confiar no nome enviado pelo cliente;
+- guardar ficheiros localmente ou num storage;
+- devolver URL segura;
+- remover ficheiros antigos;
+- impedir uploads executáveis.
+
+Segurança backend:
+- SQL injection;
+- XSS armazenado;
+- CSRF;
+- brute force;
+- rate limiting;
+- validação de input;
+- headers de segurança;
+- secrets fora do código;
+- logs sem passwords ou tokens;
+- dependências atualizadas;
+- princípio do menor privilégio;
+- backups;
+- HTTPS;
+- proteção de endpoints sensíveis.
+
+Arquitetura:
+- routes;
+- controllers;
+- services;
+- repositories;
+- schemas;
+- middlewares;
+- configuração;
+- infraestrutura;
+- separação de domínio e transporte;
+- inversão de dependências;
+- código testável;
+- evitar lógica de negócio dentro da rota.
+
+Testes backend:
+- testar schemas;
+- testar services;
+- testar repositories;
+- testar autenticação;
+- testar autorização;
+- testar endpoints;
+- testar erros;
+- testar relações;
+- testar transações;
+- testar uploads;
+- testar casos de sucesso e falha;
+- usar banco de teste;
+- limpar dados entre testes.
+
+Deploy e operação:
+- ambiente local;
+- ambiente de teste;
+- produção;
+- variáveis de ambiente;
+- migrations em produção;
+- logs;
+- monitorização;
+- health check;
+- backups;
+- rollback;
+- CI/CD;
+- Docker;
+- reverse proxy;
+- domínio e HTTPS.
+
+Perguntas de entrevista sobre backend:
+- Qual a diferença entre autenticação e autorização?
+- Quando usarias PUT e quando usarias PATCH?
+- O que significa o status 401?
+- Por que não se guarda uma password diretamente?
+- Como protegerias uma rota de administrador?
+- Como validarias dados recebidos do cliente?
+- O que é uma foreign key?
+- Quando usarias uma tabela intermediária?
+- Qual a diferença entre relation e join no Drizzle?
+- Como tratarias uma falha do banco?
+- Como farias paginação?
+- Como protegerias um endpoint contra brute force?
+- Como enviarias uma imagem para o servidor?
+- O que deve ficar numa variável de ambiente?
+- Como testarias uma API?
+
+24) Projeto backend para acompanhar o frontend
+
+Fase 1 - base:
+- criar o servidor;
+- configurar variáveis de ambiente;
+- conectar ao banco;
+- criar uma rota de health check;
+- configurar logs;
+- criar uma resposta padrão de erro.
+
+Fase 2 - utilizadores:
+- criar users;
+- criar cadastro;
+- validar dados;
+- fazer hash da password;
+- criar login;
+- criar sessão;
+- criar logout.
+
+Fase 3 - perfil:
+- GET /users/me;
+- PATCH /users/me;
+- validar os campos;
+- alterar imagem;
+- devolver o perfil atualizado;
+- impedir que um utilizador altere outro perfil.
+
+Fase 4 - futebol:
+- criar matches;
+- criar jogadores;
+- criar relações;
+- adicionar e remover jogadores;
+- criar histórico;
+- criar agendamentos;
+- aplicar permissões.
+
+Fase 5 - qualidade:
+- adicionar testes;
+- adicionar paginação;
+- adicionar rate limiting;
+- documentar endpoints;
+- criar migrations;
+- preparar deploy;
+- testar o frontend contra a API real.
+
+Regra para estudar backend:
+Aprende o conceito, cria uma rota pequena, valida a entrada, guarda os dados,
+trata os erros, testa a resposta e só depois liga essa rota ao frontend.
+
+25) Aula: JWT, Argon2 e refresh tokens com Fastify
+
+Objetivo:
+Criar um sistema de autenticação em que:
+- a password nunca é guardada diretamente;
+- o access token expira rapidamente;
+- o refresh token permite obter um novo access token;
+- o refresh token pode ser revogado no logout;
+- o backend valida tudo antes de autorizar o utilizador.
+
+1. Conceitos fundamentais
+
+Autenticação responde:
+"Quem é este utilizador?"
+
+Autorização responde:
+"Este utilizador pode executar esta ação?"
+
+JWT significa JSON Web Token. É um token assinado que normalmente contém:
+- sub: id do utilizador;
+- role: papel do utilizador;
+- jti: identificador único do token;
+- iat: momento de criação;
+- exp: momento de expiração.
+
+O JWT tem três partes separadas por pontos:
+
+header.payload.signature
+
+O payload não é secreto. É apenas codificado em Base64URL. Nunca coloques
+passwords, segredos ou dados sensíveis dentro do payload.
+
+2. Access token e refresh token
+
+Access token:
+- usado para aceder às rotas protegidas;
+- vida curta, por exemplo 15 minutos;
+- enviado no header Authorization;
+- se for roubado, a janela de uso é limitada.
+
+Exemplo de header:
+
+Authorization: Bearer ACCESS_TOKEN
+
+Refresh token:
+- usado apenas para pedir um novo access token;
+- vida mais longa, por exemplo 7 dias;
+- deve ficar num cookie HttpOnly;
+- deve poder ser revogado;
+- não deve ser usado para acessar qualquer rota da aplicação.
+
+Fluxo:
+
+1) login com email e password;
+2) backend verifica a password com Argon2;
+3) backend cria access token curto;
+4) backend cria refresh token longo;
+5) backend guarda no banco o id ou hash da sessão;
+6) backend envia o refresh token em cookie HttpOnly;
+7) frontend usa o access token nas requisições;
+8) quando o access token expira, chama POST /auth/refresh;
+9) backend valida e roda o refresh token;
+10) backend envia novos tokens.
+
+3. Instalação no Fastify
+
+Instala os pacotes:
+
+pnpm add fastify @fastify/jwt @fastify/cookie argon2
+pnpm add -D @types/node typescript
+
+Se usares TypeScript, também deves configurar o tsconfig e os scripts de
+desenvolvimento do backend.
+
+4. Variáveis de ambiente
+
+Nunca escrevas secrets diretamente no código.
+
+Exemplo de .env:
+
+JWT_ACCESS_SECRET=uma-chave-longa-e-aleatoria-para-access
+JWT_REFRESH_SECRET=outra-chave-longa-e-aleatoria-para-refresh
+NODE_ENV=development
+
+Em produção:
+- usa secrets diferentes;
+- usa valores longos e aleatórios;
+- não envies o .env para o Git;
+- configura os secrets no serviço de deploy.
+
+5. Configurar JWT no Fastify
+
+import Fastify from 'fastify';
+import fastifyJwt from '@fastify/jwt';
+import fastifyCookie from '@fastify/cookie';
+
+const app = Fastify({ logger: true });
+
+await app.register(fastifyCookie);
+
+await app.register(fastifyJwt, {
+  secret: process.env.JWT_ACCESS_SECRET!,
+});
+
+O plugin fornece sign() para criar tokens e jwtVerify() para verificar tokens.
+
+Para access e refresh tokens com secrets diferentes, uma opção clara é usar
+duas instâncias ou assinar o refresh token diretamente com jsonwebtoken. Outra
+opção é usar o mesmo plugin com uma estratégia definida para distinguir os
+tipos. O importante é não aceitar um refresh token como access token.
+
+Uma abordagem simples para começar é usar o mesmo segredo, incluir type no
+payload e verificar esse type em cada rota. Para maior isolamento, usa secrets
+separados e uma função própria para assinar/verificar refresh tokens.
+
+6. Hash da password com Argon2
+
+Nunca guardes isto:
+
+password: '12345678'
+
+Guarda apenas o hash:
+
+import argon2 from 'argon2';
+
+const passwordHash = await argon2.hash(password);
+
+No login:
+
+const passwordIsValid = await argon2.verify(
+  user.passwordHash,
+  password,
+);
+
+if (!passwordIsValid) {
+  return reply.code(401).send({
+    message: 'Credenciais inválidas',
+  });
+}
+
+Não precisas guardar o salt separadamente. O Argon2 inclui no hash as
+informações necessárias para fazer a verificação.
+
+7. Tabela de sessões ou refresh tokens
+
+Não é suficiente criar um refresh token e nunca o guardar. Sem persistência,
+fica difícil revogar uma sessão específica.
+
+Exemplo de tabela conceptual:
+
+refresh_sessions:
+- id;
+- user_id;
+- token_hash;
+- expires_at;
+- revoked_at;
+- replaced_by;
+- created_at;
+
+Guarda o hash do refresh token, e não necessariamente o token original:
+
+const refreshTokenHash = await argon2.hash(refreshToken);
+
+No momento da renovação, procuras a sessão do utilizador e verificas:
+
+await argon2.verify(session.tokenHash, refreshToken);
+
+Também podes usar um hash SHA-256 para procurar rapidamente pelo token e
+depois aplicar uma verificação adicional. O princípio é não guardar tokens
+de sessão em texto puro sem necessidade.
+
+8. Criar os tokens no login
+
+Payload mínimo recomendado:
+
+type AuthPayload = {
+  sub: string;
+  role: 'user' | 'admin';
+  type: 'access' | 'refresh';
+  jti: string;
+};
+
+Exemplo conceitual:
+
+const accessToken = await app.jwt.sign(
+  {
+    sub: String(user.id),
+    role: user.role,
+    type: 'access',
+    jti: crypto.randomUUID(),
+  },
+  { expiresIn: '15m' },
+);
+
+O refresh token deve ter outro jti e expiração maior. Guarda no banco a sessão
+associada a esse jti ou ao hash do token.
+
+9. Rota de login
+
+POST /auth/login
+
+Passos da rota:
+1) validar email e password;
+2) procurar o utilizador pelo email;
+3) verificar passwordHash com argon2.verify;
+4) responder 401 se falhar;
+5) criar access token;
+6) criar refresh token;
+7) guardar a sessão do refresh token;
+8) enviar refresh token em cookie;
+9) devolver access token e dados públicos do utilizador.
+
+Exemplo de resposta:
+
+{
+  "accessToken": "eyJ...",
+  "user": {
+    "id": 1,
+    "name": "Ilda Nhanga",
+    "role": "user"
+  }
+}
+
+Nunca devolvas passwordHash na resposta.
+
+10. Cookie do refresh token
+
+Exemplo:
+
+reply.setCookie('refresh_token', refreshToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  path: '/auth',
+  maxAge: 60 * 60 * 24 * 7,
+});
+
+Significado:
+- httpOnly impede JavaScript do browser de ler o cookie;
+- secure envia o cookie apenas por HTTPS em produção;
+- sameSite reduz riscos de CSRF;
+- path limita onde o cookie será enviado;
+- maxAge define a duração do cookie.
+
+Se o frontend e backend estiverem em domínios diferentes, configura CORS com
+credentials e usa sameSite conforme a arquitetura. Não uses allowOrigin '*'
+junto com credentials: true.
+
+11. Hook de autenticação para rotas protegidas
+
+Cria uma função que verifica o access token:
+
+async function authenticate(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    await request.jwtVerify();
+  } catch {
+    return reply.code(401).send({
+      message: 'Não autenticado',
+    });
+  }
+}
+
+Usa-a numa rota:
+
+app.get('/users/me', { onRequest: authenticate }, async (request) => {
+  const userId = request.user.sub;
+
+  return getUserById(userId);
+});
+
+O id deve vir do token verificado, não de um id enviado livremente pelo cliente.
+
+12. Verificar role e autorização
+
+Autenticar não significa autorizar.
+
+Exemplo:
+
+async function onlyAdmin(request: FastifyRequest, reply: FastifyReply) {
+  await authenticate(request, reply);
+
+  if (reply.sent) return;
+
+  if (request.user.role !== 'admin') {
+    return reply.code(403).send({
+      message: 'Sem permissão',
+    });
+  }
+}
+
+Usa 401 quando não existe autenticação válida. Usa 403 quando a identidade é
+conhecida, mas não possui permissão para a ação.
+
+13. Rota de refresh
+
+POST /auth/refresh
+
+Passos:
+1) ler o cookie refresh_token;
+2) responder 401 se não existir;
+3) verificar assinatura, type, jti e expiração;
+4) procurar a sessão no banco;
+5) rejeitar sessão revogada ou expirada;
+6) verificar o hash do token;
+7) revogar o refresh token antigo;
+8) criar um novo access token;
+9) criar um novo refresh token;
+10) guardar a nova sessão;
+11) substituir o cookie.
+
+Isto chama-se refresh token rotation. O token antigo deixa de ser válido depois
+de usado. Se um token antigo for usado novamente, pode indicar roubo; nesse
+caso, revoga toda a família de sessões relacionada.
+
+14. Rota de logout
+
+POST /auth/logout
+
+Passos:
+1) ler o refresh token do cookie;
+2) localizar a sessão;
+3) marcar revoked_at;
+4) limpar o cookie;
+5) responder 204 ou 200.
+
+Exemplo:
+
+await revokeRefreshSession(refreshToken);
+
+reply.clearCookie('refresh_token', {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  path: '/auth',
+});
+
+return reply.code(204).send();
+
+15. Refresh token não é password
+
+Argon2 é usado principalmente para passwords porque é lento de propósito e
+resiste melhor a ataques offline.
+
+JWT é usado para transportar uma identidade assinada.
+
+Refresh token é uma credencial de sessão e deve ser tratado como segredo:
+- não mostrar nos logs;
+- não colocar em localStorage quando puderes usar cookie HttpOnly;
+- revogar no logout;
+- expirar;
+- rodar após cada utilização;
+- armazenar de forma controlada.
+
+16. Frontend usando access e refresh
+
+No login:
+1) frontend envia email e password;
+2) browser recebe o cookie automaticamente;
+3) frontend guarda o access token apenas enquanto necessário;
+4) frontend envia Authorization nas chamadas protegidas.
+
+Quando recebe 401 por expiração:
+1) chama POST /auth/refresh com credentials;
+2) recebe novo access token;
+3) repete a requisição original uma vez;
+4) se falhar novamente, leva o utilizador para login.
+
+Com fetch:
+
+fetch('/auth/refresh', {
+  method: 'POST',
+  credentials: 'include',
+});
+
+O frontend não precisa ler o refresh token. O browser envia o cookie HttpOnly.
+
+17. Proteções obrigatórias
+
+- usa HTTPS em produção;
+- usa secrets fortes;
+- define expiração para os tokens;
+- valida o payload recebido;
+- rejeita token com type errado;
+- revoga refresh tokens;
+- aplica rate limit em login e refresh;
+- usa mensagens genéricas para credenciais inválidas;
+- não revela se um email existe no forgot password;
+- não imprime tokens nos logs;
+- não guarda password em texto puro;
+- não confia no role enviado pelo frontend;
+- valida autorização em todas as rotas sensíveis;
+- protege cookies contra CSRF conforme a arquitetura;
+- atualiza dependências.
+
+18. Erros comuns
+
+- guardar password diretamente na tabela;
+- usar o access token como refresh token;
+- guardar refresh token no localStorage sem necessidade;
+- nunca revogar sessões;
+- usar o mesmo segredo exposto no repositório;
+- colocar dados sensíveis no JWT;
+- aceitar qualquer token sem verificar type;
+- confiar apenas no middleware do frontend;
+- esquecer credentials no CORS;
+- usar cookie secure em HTTP local e pensar que o login falhou;
+- não tratar expiração;
+- criar refresh infinito sem rotação;
+- devolver passwordHash ao cliente;
+- responder detalhes diferentes para email inexistente e password errada.
+
+19. Ordem recomendada de implementação
+
+1) criar tabela users;
+2) criar schema de cadastro;
+3) criar hash de password com Argon2;
+4) criar POST /auth/register;
+5) criar POST /auth/login;
+6) configurar JWT;
+7) criar tabela de sessões;
+8) criar cookie de refresh;
+9) criar POST /auth/refresh;
+10) criar POST /auth/logout;
+11) criar authenticate;
+12) proteger GET /users/me;
+13) criar autorização por role;
+14) adicionar rate limit;
+15) testar login, refresh, logout, expiração e revogação.
+
+20. Checklist de teste
+
+- cadastro com password válida;
+- cadastro com email repetido;
+- login com credenciais corretas;
+- login com password errada;
+- login com utilizador inexistente;
+- acesso sem access token;
+- acesso com access token expirado;
+- refresh com cookie válido;
+- refresh sem cookie;
+- refresh com cookie revogado;
+- reutilização do refresh token antigo;
+- logout;
+- acesso de user a rota admin;
+- acesso de admin a rota admin;
+- password nunca aparece nos logs;
+- tokens nunca aparecem nos logs;
+- cookie possui HttpOnly, Secure e SameSite corretos.
+
+21. Resumo final
+
+Argon2 protege a password.
+JWT access token identifica o utilizador por pouco tempo.
+Refresh token mantém a sessão por mais tempo.
+Fastify organiza as rotas, hooks e plugins.
+O banco guarda as sessões para permitir revogação.
+
+Fluxo seguro:
+
+password --Argon2--> passwordHash
+login --> access token curto + refresh token em cookie
+request protegida --> valida access token
+access expirado --> refresh rotation
+logout --> revoga sessão + limpa cookie
+
+O objetivo não é apenas fazer o login funcionar. É garantir que uma sessão
+pode expirar, ser renovada, ser revogada e ser autorizada corretamente.
