@@ -13,9 +13,9 @@ export default function HeaderDesktop() {
     <header
       className={`fixed top-0 right-0 z-40 hidden h-16 items-center border-b border-border dark:border-border dark:bg-sidebar bg-background  p-2 px-4 transition-[left] duration-200 md:flex ${expanded ? 'left-36' : 'left-20'}`}
     >
-      <div className="w-full flex items-center justify-between">
-        <div className="md:-ml-2 md:mr-1">
-          <h1 className="text-foreground text-sm font-geist-mono font-semibold tracking-wider">
+      <div className="w-full flex items-center justify-end">
+        {/* <div className="md:-ml-2 md:mr-1">
+          <h1 className="text-foreground text-sm font-geist-mono font-semibold tracking-wider hidden lg:block">
             {pathname.split(` `).map((word) => {
               return word[0]
                 .slice(1)
@@ -23,7 +23,7 @@ export default function HeaderDesktop() {
                 .toLocaleUpperCase();
             })}
           </h1>
-        </div>
+        </div> */}
 
         <div className="flex gap-3 items-center">
           <div className="relative">
